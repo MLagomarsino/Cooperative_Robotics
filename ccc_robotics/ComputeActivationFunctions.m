@@ -19,11 +19,7 @@ uvms.A.ha = IncreasingBellShapedFunction(0.025, 0.1, 0, 1, norm(uvms.phi));
 uvms.A.t = eye(6);
 
 % vehicle position control 
-if mission.phase == 1
-    uvms.A.target = eye(6); % equality objective
-else
-    uvms.A.target = zeros(6);
-end
+uvms.A.target = (uvms.Aexternal.target).*eye(6); % equality objective
 
 % minimum altitude
 % if altitude < -1.5, A = 0;
@@ -31,11 +27,7 @@ end
 % in between, there is a smooth behavior.
 uvms.A.minalt = DecreasingBellShapedFunction(uvms.minAltitude, uvms.minAltitude + 0.5, 0, 1, uvms.altitude);
 
-% altitude control 
-if mission.phase == 1
-    uvms.A.alt = 0; % no landing task
-else
-    uvms.A.alt = 1; % equality objective
-end
+% altitude control
+uvms.A.alt = 1*(uvms.Aexternal.alt); % equality objective
 
 

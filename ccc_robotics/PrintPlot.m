@@ -36,10 +36,27 @@ set(hplot, 'LineWidth', 2);
 legend('Ajl_11','Ajl_22','Ajl_33','Ajl_44','Ajl_55','Ajl_66','Ajl_77');
 
 figure(4);
-hplot = plot(plt.t, plt.a(8:11,:));
+hplot = plot(plt.t, plt.a([9 10 12],:));
 set(hplot, 'LineWidth', 2);
-legend('Amu', 'Aha', 'Atarget', 'Aminalt');%, 'Aalt');
-title('Activation functions');  
+legend('Aha', 'Atarget', 'Aalt');%, 'Aalt');
+title('Activation functions');
+
+figure(5);
+hplot = plot(plt.t, plt.p(4:6,:));
+set(hplot, 'LineWidth', 1);
+legend('roll','pitch','yaw');
+title('Orientation of the vehicle');
+
+figure(6);
+hplot = plot(plt.t, plt.p(1:3,:));
+set(hplot, 'LineWidth', 1);
+legend('x','y','z');
+title('Position of the vehicle');
+
+figure(7);
+hplot = plot(plt.t, plt.altitude);
+set(hplot, 'LineWidth', 1);
+title('Altitude');
 
 end
 
