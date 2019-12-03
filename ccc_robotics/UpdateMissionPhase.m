@@ -1,21 +1,33 @@
 function [uvms, mission] = UpdateMissionPhase(uvms, mission)
-    switch mission.phase
-        case 1  
-            % add policy for changing phase
-            % Reach the vehicle desired position using Safe Waypoint
-            % Navition Action
-            % basic vector between the target and the vehicle frame
-            if norm(uvms.vTtarget(1:3,4)) < 0.5
-                mission.phase = 2; % Landing
-            elseif norm(uvms.vTtarget(1:3,4)) >= 0.5
-                % Active for a distance > 0.5
-                uvms.Aexternal.target = IncreasingBellShapedFunction(0.5, 0.8, 0, 1, norm(uvms.vTtarget(1:3,4)));
-                % deactive 
-                uvms.Aexternal.alt = DecreasingBellShapedFunction(0.5, 0.8, 0, 1, norm(uvms.vTtarget(1:3,4)));
+
+    if ~mission.task_completed
+        % Check if the transition is finished
+        if mission.in_transition       
+            if mission.current_time >= mission.end_transition
+                fprintf(2,"---------------- End of transition ----------------");
+                mission.in_transition = 0;
+                mission.start_transition = 0;
+                mission.end_transition = 0;
             end
-        case 2
-            uvms.Aexternal.target = 0;
-            uvms.Aexternal.alt = 1;
+        else
+        % Check if there is a transition
+
+            % Callback to check if the end condition is met
+            exit_phase = mission.exit_conditions{mission.phase};
+
+            if exit_phase(uvms)
+                if (mission.phase == mission.Nphases)
+                    fprintf(2,"---------------- Goal is reached ----------------\n");
+                    mission.task_completed = 1;
+                else
+                    fprintf(2,"---------------- Start transition ----------------");
+                    mission.phase = mission.phase + 1;
+                    mission.in_transition = 1;
+                    mission.start_transition = mission.current_time;
+                    mission.end_transition = mission.start_transition + mission.transition_interval;    
+                end
+            end
+        end
     end
 end
 

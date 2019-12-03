@@ -63,12 +63,53 @@ uvms.Jha = [zeros(1,7) nphi'*[zeros(3) eye(3)]]; % 1x13
  
 %% Minimum altitude Jacobian
 % only the z position of the vehicles counts
-uvms.Jminalt = [zeros(1,7) uvms.wTv(3,1:3) zeros(1,3)];
+uvms.Jminalt = [0 0 1]*[zeros(3,7) uvms.wTv(1:3,1:3) zeros(3,3)];
 
 %% Altitude Jacobian
 % only the z position of the vehicles counts
-uvms.Jalt = [zeros(1,7) uvms.wTv(3,1:3) zeros(1,3)];
+uvms.Jalt = [0 0 1]*[zeros(3,7) uvms.wTv(1:3,1:3) zeros(3,3)];
 
+%% Alignment of longitudinal axis of the vehicle towards the nodule
+rock_center = [12.2025   37.3748  -39.8860]';
+% vector joining the vehicle frame to the nodule frame wrt w
+basic_vector_vn = rock_center - uvms.wTv(1:3,4);
+% projected on v
+v_bv_n = (uvms.wTv(1:3,1:3))' * basic_vector_vn;
+% projection on the inertial horizontal plane (third component = 0)
+% v_bv_n(3) = 0;
+v_bv_n = [1 0 0; 0 1 0; 0 0 0] * v_bv_n;
+% unit vector joining the vehicle frame to the nodule frame
+v_uv_n = v_bv_n/norm(v_bv_n);%b
+
+% vector axis i of the vehicle frame
+iv = [1 0 0]'; %a
+
+% a^b
+unit_n = cross(iv, v_uv_n);
+unit_n = unit_n/norm(unit_n);
+
+omega_bw = (norm(uvms.p_dot(1:3))/norm(basic_vector_vn)) * ...
+            cross(uvms.p_dot(1:3),basic_vector_vn);
+        
+omega_aw = (norm(uvms.p_dot(1:3))/norm(uvms.wTv(1:3,4))) * ...
+            cross(uvms.p_dot(1:3),uvms.wTv(1:3,4));
+        
+theta_dot = dot(unit_n, (omega_bw - omega_aw));
+rho_derivative = unit_n * theta_dot;
+
+uvms.Jla = [zeros(1,7) rho_derivative' eye(1,3)]; % 1x13
+    
+% ---- misalignment vector axis i of the vehicle frame wrt projection, 
+% on the inertial horizontal plane, of the unit vector joining the vehicle 
+% frame to the nodule frame.
+% uvms.misalignment   = ReducedVersorLemma(v_uv_n, iv); % only for i
+% if (norm(uvms.misalignment) > 0)
+%     nmisalignment = uvms.misalignment/norm(uvms.misalignment); % unit vector
+% else
+%     nmisalignment = [0 0 0]';
+% end
+% uvms.Jla = [zeros(1,7) nmisalignment'*[zeros(3) eye(3)]]; % 1x13
+ 
 %% Preferred arm posture Jacobian
 % uvms.Jarmposture 
 

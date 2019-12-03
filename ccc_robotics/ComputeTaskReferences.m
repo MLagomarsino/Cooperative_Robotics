@@ -14,9 +14,9 @@ uvms.xdot.t(4:6) = Saturate(uvms.xdot.t(4:6), 0.2);
 %% reference for vehicle-frame position control task
 [ang_v, lin_v] = CartError(uvms.vTtarget , eye(4));
 % we don't care about the arm 
-uvms.xdot.target = 0.4 * [lin_v; ang_v];
+uvms.xdot.target = 0.5 * [lin_v; ang_v];
 % limit the requested velocities...
-uvms.xdot.target(1:3) = Saturate(uvms.xdot.target(1:3), 0.9);
+uvms.xdot.target(1:3) = Saturate(uvms.xdot.target(1:3), 0.9); % m/s
 uvms.xdot.target(4:6) = Saturate(uvms.xdot.target(4:6), 0.9);
 
 %% reference for horizontal attitude
@@ -26,10 +26,13 @@ uvms.xdot.ha = -0.1 * norm(uvms.phi);
 % Compute the current altitude from the seafloor by taking into account
 % that the vehicle can be oriented in a different way with respect to world
 % frame
-uvms.altitude = uvms.wTv(3,1:3)*[0 0 uvms.sensorDistance]';
+uvms.altitude = [0 0 1]*uvms.wTv(1:3,1:3)*[0 0 uvms.sensorDistance]';
 uvms.xdot.minalt = -0.5*(uvms.altitude - uvms.minAltitude);
 
 %% reference for altitude
 % the altitude of the vehicle converges to 0
-uvms.xdot.alt = -0.3*(uvms.altitude - 0.1);
+uvms.xdot.alt = -0.5*(uvms.altitude);%  - 0.1);
+
+%% reference for longitudinal alignment
+uvms.xdot.la = 1;%-0.5 * norm(uvms.misalignment);
 

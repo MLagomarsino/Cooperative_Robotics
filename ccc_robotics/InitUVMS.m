@@ -45,6 +45,7 @@ uvms.virtualFrameVelocity = zeros(6,1);
 uvms.sensorDistance = 0; % distance of the vehicle from the seafloor measured by the sensor
 % ----
 uvms.minAltitude = 1; % minimum altitude from the seafloor
+uvms.misalignment = zeros(3,1); % misalignment of the longitudinal axis
 
 uvms.Jjl = [];
 uvms.Jmu = [];
@@ -60,6 +61,7 @@ uvms.Jvpos = [];
 uvms.Jminalt = [];
 uvms.Jarmposture = [];
 uvms.Jalt = [];
+uvms.Jla = [];
     
 uvms.xdot.jl = [];
 uvms.xdot.mu = [];
@@ -72,6 +74,7 @@ uvms.xdot.ca = [];
 uvms.xdot.target = [];
 uvms.xdot.minalt = [];
 uvms.xdot.alt = [];
+uvms.xdot.la = [];
 
 uvms.A.jl = zeros(7,7);
 uvms.A.mu = 0;
@@ -86,6 +89,7 @@ uvms.A.minalt = zeros(1,1);
 uvms.A.alt = zeros(1);
 uvms.Aexternal.target = zeros(1);
 uvms.Aexternal.alt = zeros(1);
+uvms.A.la = zeros(1,1);
 
 uvms.toolFrameError = zeros(6,1);
 uvms.totalError = zeros(6,1);
