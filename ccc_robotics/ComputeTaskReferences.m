@@ -34,5 +34,8 @@ uvms.xdot.minalt = -0.5*(uvms.altitude - uvms.minAltitude);
 uvms.xdot.alt = -0.5*(uvms.altitude);%  - 0.1);
 
 %% reference for longitudinal alignment
-uvms.xdot.la = 1;%-0.5 * norm(uvms.misalignment);
+% uvms.xdot.la = 0.5 * norm(uvms.misalignment); % Norm
+uvms.xdot.la = 0.5 * uvms.misalignment;
 
+%% reference for fixing the vehicle in the current position
+uvms.xdot.fixvehicle = zeros(6,1); % no velocity

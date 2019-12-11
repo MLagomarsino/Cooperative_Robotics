@@ -20,15 +20,19 @@ function [Qp, rhop, uvms] = taskSequence(uvms, mission)
     % altitude control objective
     uvms.A.alt = UpdateActivation(uvms.A.alt, mission, 5);
     [Qp, rhop] = iCAT_task(uvms.A.alt,   uvms.Jalt,   Qp, rhop, uvms.xdot.alt, 0.0001,   0.01, 10);
-
-%     % joint limit task
-%     uvms.A.target_t = updateActivation(uvms.A.target, mission, 3);
-%     [Qp, rhop] = iCAT_task(uvms.A.jl_t,    uvms.Jjl,    Qp, rhop, uvms.xdot.jl,  0.0001,   0.01, 10);
-%     % tool-frame position control task
-%     uvms.A.target_t = updateActivation(uvms.A.target, mission, 3);
-%     [Qp, rhop] = iCAT_task(uvms.A.t_t,    uvms.Jt,    Qp, rhop, uvms.xdot.t,  0.0001,   0.01, 10);
+    % fix vehicle position
+    uvms.A.fixvehicle = UpdateActivation(uvms.A.fixvehicle, mission, 6);
+    [Qp, rhop] = iCAT_task(uvms.A.fixvehicle,    uvms.Jfixvehicle,    Qp, rhop, uvms.xdot.fixvehicle,  0.0001,   0.01, 10);
+    % joint limit task
+%     uvms.A.jl = UpdateActivation(uvms.A.jl, mission, 6);
+%     [Qp, rhop] = iCAT_task(uvms.A.jl,    uvms.Jjl,    Qp, rhop, uvms.xdot.jl,  0.0001,   0.01, 10);
+    uvms.A.alt = UpdateActivation(uvms.A.alt, mission, 7); % solo per far funzionare!!!!
+    [Qp, rhop] = iCAT_task(uvms.A.alt,   uvms.Jalt,   Qp, rhop, uvms.xdot.alt, 0.0001,   0.01, 10);
+    % tool-frame position control task
+    uvms.A.t = UpdateActivation(uvms.A.t, mission, 8);
+    [Qp, rhop] = iCAT_task(uvms.A.t,    uvms.Jt,    Qp, rhop, uvms.xdot.t,  0.0001,   0.01, 10);
 %     % manipulability
-%     uvms.A.target_t = updateActivation(uvms.A.target, mission, 3);
+%     uvms.A.target_t = UpdateActivation(uvms.A.target, mission, 3);
 %     [Qp, rhop] = iCAT_task(uvms.A.mu_t,   uvms.Jmu,   Qp, rhop, uvms.xdot.mu, 0.000001, 0.0001, 10);
 %     % this task should be the last one
 %     [Qp, rhop] = iCAT_task(eye(13),     eye(13),    Qp, rhop, zeros(13,1),  0.0001,   0.01, 10);    

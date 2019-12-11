@@ -1,4 +1,4 @@
-function [plt] = InitDataPlot( maxloops)
+function [plt] = InitDataPlot( maxloops, mission)
     plt.t = zeros(1, maxloops);
     plt.q = zeros(7, maxloops);
     plt.q_dot = zeros(7, maxloops);
@@ -24,6 +24,8 @@ function [plt] = InitDataPlot( maxloops)
     plt.totalError = zeros(6, maxloops);
     
     plt.altitude = zeros(1, maxloops);
-
+    plt.misalignment = zeros(3, maxloops);
+    plt.change_phase = zeros(mission.Nphases);
+    
 end
 

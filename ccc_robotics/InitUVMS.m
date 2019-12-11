@@ -62,6 +62,7 @@ uvms.Jminalt = [];
 uvms.Jarmposture = [];
 uvms.Jalt = [];
 uvms.Jla = [];
+uvms.Jfixvehicle = [];
     
 uvms.xdot.jl = [];
 uvms.xdot.mu = [];
@@ -90,6 +91,7 @@ uvms.A.alt = zeros(1);
 uvms.Aexternal.target = zeros(1);
 uvms.Aexternal.alt = zeros(1);
 uvms.A.la = zeros(1,1);
+uvms.A.fixvehicle = zeros(1);
 
 uvms.toolFrameError = zeros(6,1);
 uvms.totalError = zeros(6,1);

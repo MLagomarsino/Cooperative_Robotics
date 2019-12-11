@@ -30,6 +30,7 @@ plt.a(9, loop) = uvms.A.ha(1,1);
 plt.a(10,loop) = uvms.A.target(1,1);
 plt.a(11,loop) = uvms.A.minalt(1,1);
 plt.a(12,loop) = uvms.A.alt(1,1);
+plt.a(13,loop) = uvms.A.la(1,1);
 
 plt.toolFrameError(:, loop) = uvms.toolFrameError;
 plt.totalError(:, loop) = uvms.totalError;
@@ -38,5 +39,6 @@ plt.toolx(:,loop) = uvms.wTt(1,4);
 plt.tooly(:,loop) = uvms.wTt(2,4);
 
 plt.altitude(1, loop) = uvms.altitude;
+plt.misalignment(:, loop) = uvms.misalignment;
 
 end

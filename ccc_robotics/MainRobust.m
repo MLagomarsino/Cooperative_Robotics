@@ -35,9 +35,6 @@ fopen(uArm);
 uAltitude = dsp.UDPReceiver('LocalIPPort',15003,'MessageDataType','single');
 uAltitude.setup();
 
-% Preallocation
-plt = InitDataPlot(maxloops);
-
 % Initialize uvms structure
 uvms = InitUVMS('Robust');
  
@@ -77,6 +74,9 @@ uvms.eTt = eye(4);
 
 % Definition and initialization of missions 
 mission = InitMissionPhase();
+
+% Preallocation
+plt = InitDataPlot(maxloops, mission);
 
 uvms = ComputeActivationFunctions(uvms, mission);
 
@@ -147,7 +147,7 @@ for t = 0:deltat:end_time
     uvms.p = integrate_vehicle(uvms.p, uvms.p_dot, deltat);
     
     % check if the mission phase should be changed
-    [uvms, mission] = UpdateMissionPhase(uvms, mission);
+    [uvms, mission,plt] = UpdateMissionPhase(uvms, mission, plt);
         
     % send packets to Unity viewer
     SendUdpPackets(uvms,wuRw,vRvu,uArm,uVehicle);
@@ -157,7 +157,7 @@ for t = 0:deltat:end_time
     loop = loop + 1;
    
     % add debug prints here
-    if (mod(t,0.1) == 0 && ~mission.task_completed)
+    if (mod(t,0.1) == 0 && ~(mission.task_completed == sum(mission.tasksPerPhase(mission.Nphases,:))))
         t
         (uvms.p)'
         uvms.sensorDistance

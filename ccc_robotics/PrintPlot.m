@@ -41,9 +41,9 @@ legend({'Ajl_11','Ajl_22','Ajl_33','Ajl_44','Ajl_55','Ajl_66','Ajl_77'},'FontSiz
 xlabel('Time(s)','FontSize',14),ylabel('??????Joint limit','FontSize',14)
 
 figure(4);
-hplot = plot(plt.t, plt.a([9 10 12],:));
+hplot = plot(plt.t, plt.a([9 10 12 13],:));
 set(hplot, 'LineWidth', 2);
-legend({'Aha', 'Atarget', 'Aalt'},'FontSize',14);%, 'Aalt');
+legend({'Aha', 'Atarget', 'Aalt', 'Ala'},'FontSize',14);%, 'Aalt');
 title('\fontsize{16}Activation functions'); 
 xlabel('Time(s)','FontSize',14)
 
@@ -66,6 +66,18 @@ hplot = plot(plt.t, plt.altitude);
 set(hplot, 'LineWidth', 1.5);
 title('\fontsize{16}Altitude'); 
 xlabel('Time(s)','FontSize',14),ylabel('Altitude(m)','FontSize',14)
+
+figure(8);
+for i = 1:size(plt.misalignment,2)
+    norm_rho(i) = norm(plt.misalignment(:,i));
+end
+hplot = plot(plt.t, norm_rho);
+set(hplot, 'LineWidth', 1.5);
+title('\fontsize{16}Misalignment vector'); 
+xlabel('Time(s)','FontSize',14),ylabel('Norm(m)','FontSize',14)
+xline(plt.change_phase(1), '--r', 'Phase 1');
+xline(plt.change_phase(2), '--r', 'Phase 2');
+xline(plt.change_phase(3), '--r', 'Phase 3');
 
 end
 

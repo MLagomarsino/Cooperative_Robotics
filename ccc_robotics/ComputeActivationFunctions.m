@@ -31,6 +31,9 @@ uvms.A.minalt = 1;%DecreasingBellShapedFunction(uvms.minAltitude, uvms.minAltitu
 uvms.A.alt = 1;%*(uvms.Aexternal.alt); % equality objective
 
 % longitudinal axis of the vehicle aligned to the rocket
-uvms.A.la = 1;%IncreasingBellShapedFunction(0.025, 0.1, 0, 1, norm(uvms.misalignment));
+uvms.A.la = eye(3);%IncreasingBellShapedFunction(0.025, 0.1, 0, 1, norm(uvms.misalignment));
+
+% fix vehicle velocity
+uvms.A.fixvehicle = eye(6);
 
 
