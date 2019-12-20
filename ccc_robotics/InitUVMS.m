@@ -63,6 +63,7 @@ uvms.Jarmposture = [];
 uvms.Jalt = [];
 uvms.Jla = [];
 uvms.Jfixvehicle = [];
+uvms.Jopt = [];
     
 uvms.xdot.jl = [];
 uvms.xdot.mu = [];
@@ -77,21 +78,22 @@ uvms.xdot.minalt = [];
 uvms.xdot.alt = [];
 uvms.xdot.la = [];
 
-uvms.A.jl = zeros(7,7);
-uvms.A.mu = 0;
-uvms.A.cc = zeros(1,1);
-uvms.A.ha = zeros(1,1);
-uvms.A.t = zeros(6,6);
-uvms.A.c = [];
-uvms.A.ca = zeros(3,3);
+uvms.A.jl = zeros(7,7);     uvms.A.jl_t = zeros(7,7);
+uvms.A.mu = 0;              uvms.A.mu_t = 0;
+uvms.A.cc = zeros(1,1);     %?????? what is
+uvms.A.ha = zeros(1,1);     uvms.A.ha_t = zeros(1,1);
+uvms.A.t = zeros(6,6);      uvms.A.t = zeros(6,6);
+uvms.A.c = [];     %?????? what is
+uvms.A.ca = zeros(3,3);     %?????? what is
 % ----
-uvms.A.target = zeros(6,6);
-uvms.A.minalt = zeros(1,1);
-uvms.A.alt = zeros(1);
-uvms.Aexternal.target = zeros(1);
-uvms.Aexternal.alt = zeros(1);
-uvms.A.la = zeros(1,1);
-uvms.A.fixvehicle = zeros(1);
+uvms.A.target = zeros(6,6);         uvms.A.target_t = zeros(6,6);
+uvms.A.minalt = zeros(1,1);         uvms.A.minalt_t = zeros(1,1);
+uvms.A.alt = zeros(1);              uvms.A.alt_t = zeros(1);
+% uvms.Aexternal.target = zeros(1);
+% uvms.Aexternal.alt = zeros(1);
+uvms.A.la = zeros(1,1);             uvms.A.la_t = zeros(1,1);
+uvms.A.fixvehicle = zeros(1);       uvms.A.fixvehicle_t = zeros(1);
+uvms.A.opt = zeros(4);              uvms.A.opt_t = zeros(4);
 
 uvms.toolFrameError = zeros(6,1);
 uvms.totalError = zeros(6,1);

@@ -1,10 +1,15 @@
-function [newA] = UpdateActivation(A, mission, task)
-
+function [currentA] = UpdateActivation(A, mission, task)
+    % [newA] = UpdateActivation(A, mission, task)
+    %       A = activation function for a given task
+    %       mission = structure containing info about the mission
+    %       task = number identifying the selected task
+    
+    
     % Current state of the selected task 
     %   1 -> active;    0 -> inactive;
     current_state = mission.tasksPerPhase(mission.phase, task);
 
-    % Corresponding activation function at time t
+    % Initialization with state at time t
     A_t = current_state;
     
     % During a transition
@@ -24,5 +29,5 @@ function [newA] = UpdateActivation(A, mission, task)
         end
     end
     % Update activation function
-    newA = A * A_t;
+    currentA = A * A_t;
 end

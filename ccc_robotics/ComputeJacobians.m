@@ -17,7 +17,7 @@ function [uvms] = ComputeJacobians(uvms)
 % where m is the row dimension of the task, and of its reference rate
 
 %% Joint limit Jacobian
-% uvms.Jjl
+uvms.Jjl =  [zeros(7) eye(7,6)]; % 7 joints
 
 %% Manipulability Jacobian
 [Jmu_a, uvms.mu] = ComputeManipulability(uvms.bJe, uvms.djdq);
@@ -97,12 +97,12 @@ unit_n = uvms.misalignment/theta;
 Pn = unit_n * unit_n';
 
 % Controlling the norm
-% uvms.Jla = unit_n'*[zeros(3,7)  Pn*(-1/(norm(v_basic_vector_vn)^2))*skew(v_basic_vector_vn)*[1 0 0;0 1 0;0 0 0]  -Pn]; % 1x13
-% uvms.Jla = unit_n'*[zeros(3,7)  zeros(3)  -Pn];
-% uvms.Jla = unit_n'*[zeros(3,7)  Pn*(-1/(norm(v_basic_vector_vn)^2))*skew(v_basic_vector_vn)*[1 0 0;0 1 0;0 0 0]  zeros(3)];
+% uvms.Jla = unit_n'*[zeros(3,7)  Pn*(1/(norm(v_basic_vector_vn)^2))*skew(v_basic_vector_vn)*[1 0 0;0 1 0;0 0 0]  Pn]; % 1x13
+% uvms.Jla = unit_n'*[zeros(3,7)  zeros(3)  Pn];
+% uvms.Jla = unit_n'*[zeros(3,7)  Pn*(1/(norm(v_basic_vector_vn)^2))*skew(v_basic_vector_vn)*[1 0 0;0 1 0;0 0 0]  zeros(3)];
 
 % Controlling 3 degrees of freedom : wb/a = unit_n*lambda*theta
- uvms.Jla = [zeros(3,7)  (-1/(norm(v_basic_vector_vn)^2))*skew(v_basic_vector_vn)*[1 0 0;0 1 0;0 0 0]  -eye(3)]; % 3x13
+uvms.Jla = [zeros(3,7)  (1/(norm(v_basic_vector_vn)^2))*skew(v_basic_vector_vn)*[1 0 0;0 1 0;0 0 0]  eye(3)]; % 3x13
 % uvms.Jla = [zeros(3,7)  (-1/(norm(v_basic_vector_vn)^2))*skew(v_basic_vector_vn)*[1 0 0;0 1 0;0 0 0]  zeros(3)]; % 3x13
 % uvms.Jla = [zeros(3,7)  zeros(3) -eye(3)]; % 3x13
 %N_theta = skew(v_uv_n)*skew(iv)*(Pn - eye(3));
@@ -120,11 +120,12 @@ Pn = unit_n * unit_n';
  
 % ---- misalignment vector axis i of the vehicle frame wrt projection, 
 % on the inertial horizontal plane, of the unit vector joining the vehicle 
-% frame to the nodule frame.
-%% Preferred arm posture Jacobian
-% uvms.Jarmposture 
+% frame to the nodule frame. 
 
 %% Fixing vehicle velocity Jacobian
 uvms.Jfixvehicle = [zeros(6,7) eye(6)];
+
+%% Preferred arm posture Jacobian
+uvms.Jopt =  [eye(4) zeros(4,3) zeros(4,6)];
 
 end

@@ -14,10 +14,13 @@ xlabel('Time(s)','FontSize',14),ylabel('Joint angle (rad)','FontSize',14)
 subplot(2,1,2);
 hplot = plot(plt.t, plt.q_dot);
 set(hplot, 'LineWidth', 1.5);
-legend({'qdot_1','qdot_2','qdot_3','qdot_4','qdot_5','qdot_6','qdot_7'},'FontSize',14);
+for i = 1:plt.Nphases
+    xline(plt.change_phase(i), '--r', ['Phase ',num2str(i)]);
+end
+xline(plt.change_phase(plt.Nphases+1), '--r', 'Goal reached');
+legend(hplot(1:7),{'qdot_1','qdot_2','qdot_3','qdot_4','qdot_5','qdot_6','qdot_7'},'FontSize',14);
 title('\fontsize{16}Joint velocity vector'),
 xlabel('Time(s)','FontSize',14),ylabel('Joint velocities','FontSize',14)
-
 
 figure(2);
 sgtitle('\fontsize{16}Vehicle')
@@ -30,7 +33,11 @@ xlabel('Time(s)','FontSize',14),ylabel('Position(m) and orientation(rad)','FontS
 subplot(2,1,2);
 hplot = plot(plt.t, plt.p_dot);
 set(hplot, 'LineWidth', 1.5);
-legend({'xdot', 'ydot','zdot','omega_x','omega_y','omega_z'},'FontSize',14);
+for i = 1:plt.Nphases
+    xline(plt.change_phase(i), '--r', ['Phase ',num2str(i)]);
+end
+xline(plt.change_phase(plt.Nphases+1), '--r', 'Goal reached');
+legend(hplot(1:6),{'xdot', 'ydot','zdot','omega_x','omega_y','omega_z'},'FontSize',14);
 xlabel('Time(s)','FontSize',14),ylabel('Linear (m/s) and angular (rad/s) velocities','FontSize',14);
 title('\fontsize{16}Linear and angular velocities of the vehicle');
 
@@ -38,12 +45,13 @@ figure(3);
 hplot = plot(plt.t, plt.a(1:7,:));
 set(hplot, 'LineWidth', 2);
 legend({'Ajl_11','Ajl_22','Ajl_33','Ajl_44','Ajl_55','Ajl_66','Ajl_77'},'FontSize',14);
-xlabel('Time(s)','FontSize',14),ylabel('??????Joint limit','FontSize',14)
+xlabel('Time(s)','FontSize',14)
+title('\fontsize{16}Activation functions Joint limit task');
 
 figure(4);
-hplot = plot(plt.t, plt.a([9 10 12 13],:));
+hplot = plot(plt.t, plt.a([9 10 12 13 14 15],:));
 set(hplot, 'LineWidth', 2);
-legend({'Aha', 'Atarget', 'Aalt', 'Ala'},'FontSize',14);%, 'Aalt');
+legend({'Aha', 'Atarget', 'Aalt', 'Ala', 'Afixvehicle', 'At'},'FontSize',14);%, 'Aalt');
 title('\fontsize{16}Activation functions'); 
 xlabel('Time(s)','FontSize',14)
 
@@ -75,9 +83,10 @@ hplot = plot(plt.t, norm_rho);
 set(hplot, 'LineWidth', 1.5);
 title('\fontsize{16}Misalignment vector'); 
 xlabel('Time(s)','FontSize',14),ylabel('Norm(m)','FontSize',14)
-xline(plt.change_phase(1), '--r', 'Phase 1');
-xline(plt.change_phase(2), '--r', 'Phase 2');
-xline(plt.change_phase(3), '--r', 'Phase 3');
+for i = 1:plt.Nphases
+    xline(plt.change_phase(i), '--r', ['Phase ',num2str(i)]);
+end
+xline(plt.change_phase(plt.Nphases+1), '--r', 'Goal reached');
 
 end
 

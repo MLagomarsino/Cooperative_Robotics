@@ -5,7 +5,7 @@ function [uvms, mission,plt] = UpdateMissionPhase(uvms, mission, plt)
         % Check if the transition is finished
         if mission.in_transition       
             if mission.current_time >= mission.end_transition
-                fprintf(2,"---------------- End of transition ----------------");
+                fprintf(2,"---------------- End of transition ----------------\n");
                 mission.in_transition = 0;
                 mission.start_transition = 0;
                 mission.end_transition = 0;
@@ -21,9 +21,10 @@ function [uvms, mission,plt] = UpdateMissionPhase(uvms, mission, plt)
                     mission.task_completed = mission.task_completed + 1;
                     if (mission.task_completed == sum(mission.tasksPerPhase(mission.Nphases,:)))
                         fprintf(2,"---------------- Goal is reached ----------------\n");
+                        plt.change_phase(mission.phase+1) = mission.current_time;
                     end
                 else
-                    fprintf(2,"---------------- Start transition ----------------");
+                    fprintf(2,"---------------- Start transition ----------------\n");
                     mission.phase = mission.phase + 1;
                     plt.change_phase(mission.phase) = mission.current_time;
                     mission.in_transition = 1;

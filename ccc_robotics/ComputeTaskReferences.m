@@ -6,7 +6,7 @@ uvms.xdot.mu = 0.1 * (0.12 - uvms.mu);
 
 %% reference for tool-frame position control task
 [ang, lin] = CartError(uvms.vTg , uvms.vTt);
-uvms.xdot.t = 0.2 * [ang; lin];
+uvms.xdot.t = 0.5 * [ang; lin];
 % limit the requested velocities...
 uvms.xdot.t(1:3) = Saturate(uvms.xdot.t(1:3), 0.2);
 uvms.xdot.t(4:6) = Saturate(uvms.xdot.t(4:6), 0.2);
@@ -34,8 +34,15 @@ uvms.xdot.minalt = -0.5*(uvms.altitude - uvms.minAltitude);
 uvms.xdot.alt = -0.5*(uvms.altitude);%  - 0.1);
 
 %% reference for longitudinal alignment
-% uvms.xdot.la = 0.5 * norm(uvms.misalignment); % Norm
-uvms.xdot.la = 0.5 * uvms.misalignment;
+% uvms.xdot.la = -0.5 * norm(uvms.misalignment); % Norm
+uvms.xdot.la = -0.5 * uvms.misalignment;
 
 %% reference for fixing the vehicle in the current position
 uvms.xdot.fixvehicle = zeros(6,1); % no velocity
+
+%% reference for joint limit
+uvms.xdot.jl = -0.5*(uvms.q - ((uvms.jlmax - uvms.jlmin)./2)); % -lamda (current_q - desired_q)
+
+%% reference for optimize configuration of the first 4 joints
+preferred_shape = [-0.0031 1.2586 0.0128 -1.2460]';
+uvms.xdot.opt = -0.8*(uvms.q(1:4) - preferred_shape);

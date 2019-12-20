@@ -5,7 +5,7 @@ function [uvms] = ComputeActivationFunctions(uvms, mission)
 % if mu < 0.02, A = 1;
 % if mu > 0.05, A = 0;
 % in between, there is a smooth behavior.
-uvms.A.mu = 1;%DecreasingBellShapedFunction(0.02, 0.05, 0, 1, uvms.mu);
+uvms.A.mu = DecreasingBellShapedFunction(0.02, 0.05, 0, 1, uvms.mu);
 
 % phi: misalignment vector between the horizontal plane and the
 % longitudinal axis of the vehicle
@@ -35,5 +35,14 @@ uvms.A.la = eye(3);%IncreasingBellShapedFunction(0.025, 0.1, 0, 1, norm(uvms.mis
 
 % fix vehicle velocity
 uvms.A.fixvehicle = eye(6);
+
+% Joint limit
+for i = 1:length(uvms.q)
+    uvms.A.jl(i,i) = DecreasingBellShapedFunction(uvms.jlmin(i),uvms.jlmin(i) + 0.5,0,1,uvms.q(i)) + ...
+                    IncreasingBellShapedFunction(uvms.jlmax(i)-0.5,uvms.jlmax(i),0,1,uvms.q(i));
+end
+     
+% Optimization 
+uvms.A.opt = eye(4);
 
 

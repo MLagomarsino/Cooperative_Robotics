@@ -26,6 +26,6 @@ function [plt] = InitDataPlot( maxloops, mission)
     plt.altitude = zeros(1, maxloops);
     plt.misalignment = zeros(3, maxloops);
     plt.change_phase = zeros(mission.Nphases);
-    
+    plt.Nphases = mission.Nphases;
 end
 
