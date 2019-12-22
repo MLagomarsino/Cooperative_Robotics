@@ -153,11 +153,11 @@ for t = 0:deltat:end_time
     SendUdpPackets(uvms,wuRw,vRvu,uArm,uVehicle);
         
     % collect data for plots
-    plt = UpdateDataPlot(plt,uvms,t,loop);
+    plt = UpdateDataPlot(plt,uvms,t,loop, mission);
     loop = loop + 1;
    
     % add debug prints here
-    if (mod(t,0.1) == 0 && ~(mission.task_completed == sum(mission.tasksPerPhase(mission.Nphases,:))))
+    if (mod(t,0.1) == 0 && ~(plt.goalreached))
         t
         (uvms.p)'
         %uvms.sensorDistance

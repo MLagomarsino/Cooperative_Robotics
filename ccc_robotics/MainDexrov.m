@@ -6,7 +6,7 @@ close all
 
 % Simulation variables (integration and final time)
 deltat = 0.005;
-end_time = 45;
+end_time = 35;
 loop = 1;
 maxloops = ceil(end_time/deltat);
 
@@ -55,7 +55,7 @@ uvms.wTg = [uvms.wRg uvms.goalPosition; 0 0 0 1];
 uvms.eTt = eye(4);
 
 % defines the target position for the vehicle position task      
-uvms.targetPosition = pipe_center + (pipe_radius + 5)*[0 0 1]';
+uvms.targetPosition = pipe_center + (pipe_radius + 1.5)*[0 0 1]';
 uvms.wRtarget = rotation(0, -0.06, 0.5);
 uvms.wTtarget = [uvms.wRtarget uvms.targetPosition; 0 0 0 1]; % transf. matrix w->target
 
@@ -74,13 +74,10 @@ for t = 0:deltat:end_time
     uvms = ComputeJacobians(uvms);
     uvms = ComputeTaskReferences(uvms, mission);
     uvms = ComputeActivationFunctions(uvms, mission);
-    
-    % main kinematic algorithm initialization
-    % rhop order is [qdot_1, qdot_2, ..., qdot_7, xdot, ydot, zdot, omega_x, omega_y, omega_z]
-    rhop = zeros(13,1);
-    Qp = eye(13); 
+  
     
     mission.current_time = t;
+    
     % the sequence of iCAT_task calls defines the priority
     [Qp, rhop, uvms] = taskSequence(uvms, mission);
     % the sequence of iCAT_task calls defines the priority
@@ -102,17 +99,17 @@ for t = 0:deltat:end_time
     uvms.p = integrate_vehicle(uvms.p, uvms.p_dot, deltat);
     
     % check if the mission phase should be changed
-    [uvms, mission] = UpdateMissionPhase(uvms, mission);
+    [uvms, mission,plt] = UpdateMissionPhase(uvms, mission, plt);
     
     % send packets to Unity viewer
     SendUdpPackets(uvms,wuRw,vRvu,uArm,uVehicle);
         
     % collect data for plots
-    plt = UpdateDataPlot(plt,uvms,t,loop);
+    plt = UpdateDataPlot(plt,uvms,t,loop, mission);
     loop = loop + 1;
    
     % add debug prints here
-    if (mod(t,0.1) == 0)
+    if (mod(t,0.1) == 0 && ~(plt.goalreached))
         t
         uvms.p'
     end

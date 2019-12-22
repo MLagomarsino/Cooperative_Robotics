@@ -17,7 +17,9 @@ set(hplot, 'LineWidth', 1.5);
 for i = 1:plt.Nphases
     xline(plt.change_phase(i), '--r', ['Phase ',num2str(i)]);
 end
-xline(plt.change_phase(plt.Nphases+1), '--r', 'Goal reached');
+if plt.goalreached
+    xline(plt.change_phase(plt.Nphases+1), '--r', 'Goal reached');
+end
 legend(hplot(1:7),{'qdot_1','qdot_2','qdot_3','qdot_4','qdot_5','qdot_6','qdot_7'},'FontSize',14);
 title('\fontsize{16}Joint velocity vector'),
 xlabel('Time(s)','FontSize',14),ylabel('Joint velocities','FontSize',14)
@@ -36,7 +38,9 @@ set(hplot, 'LineWidth', 1.5);
 for i = 1:plt.Nphases
     xline(plt.change_phase(i), '--r', ['Phase ',num2str(i)]);
 end
-xline(plt.change_phase(plt.Nphases+1), '--r', 'Goal reached');
+if plt.goalreached
+    xline(plt.change_phase(plt.Nphases+1), '--r', 'Goal reached');
+end
 legend(hplot(1:6),{'xdot', 'ydot','zdot','omega_x','omega_y','omega_z'},'FontSize',14);
 xlabel('Time(s)','FontSize',14),ylabel('Linear (m/s) and angular (rad/s) velocities','FontSize',14);
 title('\fontsize{16}Linear and angular velocities of the vehicle');
@@ -45,15 +49,17 @@ figure(3);
 hplot = plot(plt.t, plt.a(1:7,:));
 set(hplot, 'LineWidth', 2);
 legend({'Ajl_11','Ajl_22','Ajl_33','Ajl_44','Ajl_55','Ajl_66','Ajl_77'},'FontSize',14);
-xlabel('Time(s)','FontSize',14)
+xlabel('Time(s)','FontSize',14),ylabel('Activation value','FontSize',14);
 title('\fontsize{16}Activation functions Joint limit task');
 
 figure(4);
-hplot = plot(plt.t, plt.a([9 10 12 13 14 15],:));
-set(hplot, 'LineWidth', 2);
-legend({'Aha', 'Atarget', 'Aalt', 'Ala', 'Afixvehicle', 'At'},'FontSize',14);%, 'Aalt');
+hplot = plot(plt.t, plt.a([8 9 10 14 15 16],:));
+% hplot = plot(plt.t, plt.a([8 9 15 16],:));
+set(hplot, {'LineWidth'}, {2,2,2,2,2,4}', {'LineStyle'}, {'-','-','-','-','--','--'}');
+legend({'Amu','Aha', 'Atarget','Afixvehicle', 'At', 'Aopt'},'FontSize',14);
+% legend({'Amu', 'Aha', 'At', 'Aopt'},'FontSize',14);
 title('\fontsize{16}Activation functions'); 
-xlabel('Time(s)','FontSize',14)
+xlabel('Time(s)','FontSize',14),ylabel('Activation value','FontSize',14);
 
 figure(5);
 hplot = plot(plt.t, plt.p(4:6,:));
@@ -86,7 +92,9 @@ xlabel('Time(s)','FontSize',14),ylabel('Norm(m)','FontSize',14)
 for i = 1:plt.Nphases
     xline(plt.change_phase(i), '--r', ['Phase ',num2str(i)]);
 end
-xline(plt.change_phase(plt.Nphases+1), '--r', 'Goal reached');
+if plt.goalreached
+    xline(plt.change_phase(plt.Nphases+1), '--r', 'Goal reached');
+end
 
 end
 

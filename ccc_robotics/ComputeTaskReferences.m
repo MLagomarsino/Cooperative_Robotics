@@ -41,8 +41,8 @@ uvms.xdot.la = -0.5 * uvms.misalignment;
 uvms.xdot.fixvehicle = zeros(6,1); % no velocity
 
 %% reference for joint limit
-uvms.xdot.jl = -0.5*(uvms.q - ((uvms.jlmax - uvms.jlmin)./2)); % -lamda (current_q - desired_q)
+uvms.xdot.jl = -0.7*(uvms.q - ((uvms.jlmax - uvms.jlmin)./2)); % -lamda (current_q - desired_q)
 
 %% reference for optimize configuration of the first 4 joints
 preferred_shape = [-0.0031 1.2586 0.0128 -1.2460]';
-uvms.xdot.opt = -0.8*(uvms.q(1:4) - preferred_shape);
+uvms.xdot.opt = -0.4*(uvms.q(1:4) - preferred_shape);

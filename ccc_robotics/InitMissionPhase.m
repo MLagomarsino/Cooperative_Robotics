@@ -2,7 +2,7 @@ function [mission] = InitMissionPhase()
     
     % Definition of the mission (fixed)
     mission.transition_interval = 5; % interval of the transition between 2 phases
-    mission.Nphases = 3;    % number of phases
+    mission.Nphases = 2;    % number of phases
     mission.Nobjectives = 11;     % total number of tasks 
 
     % Time variables (changing during execution)
@@ -22,15 +22,18 @@ function [mission] = InitMissionPhase()
     %% First phase
     % active tasks 
 %     mission.tasksPerPhase(1,:) = [0 0 0 1 1 0 0 0 0 0 1]; % Ex2.2
-    mission.tasksPerPhase(1,:) = [0 0 0 1 1 0 0 0 0 0 0]; % Ex3
-%     mission.tasksPerPhase(1,:) = [0 1 0 1 0 0 0 0 1 0 1]; % Ex5
+%     mission.tasksPerPhase(1,:) = [0 0 0 1 1 0 0 0 0 0 0]; % Ex3
+%     mission.tasksPerPhase(1,:) = [1 1 0 1 0 0 0 0 1 1 1]; % Ex5.1
+    mission.tasksPerPhase(1,:) = [0 0 0 1 1 0 0 0 0 0 1]; % Ex5.1
     % exit condition from first phase
     mission.exit_conditions(1) = {@exit_phase_target}; % callback
-    % mission.exit_conditions(1) = {@exit_endeffector_pos}; % Ex5
+%     mission.exit_conditions(1) = {@exit_endeffector_pos}; % Ex5.1 only
     %% Second phase
-    mission.tasksPerPhase(2,:) = [0 0 0 1 0 1 1 0 0 0 1];
-    % mission.exit_conditions(2) = {@exit_phase_landing}; % Ex2.2
-    mission.exit_conditions(2) = {@exit_phase_landing_withAlignment}; % Ex3
+%     mission.tasksPerPhase(2,:) = [0 0 0 1 0 1 1 0 0 0 1];
+    mission.tasksPerPhase(2,:) = [1 1 0 1 0 0 0 1 1 1 1]; % Ex5.2
+%     mission.exit_conditions(2) = {@exit_phase_landing}; % Ex2.2
+%     mission.exit_conditions(2) = {@exit_phase_landing_withAlignment}; % Ex3
+    mission.exit_conditions(2) = {@exit_endeffector_pos}; % Ex5.2
     
     %% Third phase
     % mission.tasksPerPhase(3,:) = [0 0 0 0 0 0 0 0 1 0 1]; % Ex3
@@ -56,11 +59,11 @@ function [output] = exit_endeffector_pos(uvms)
     wTe = uvms.wTv*uvms.vTe;
     eTg = inv(wTe)*uvms.wTg;
     
-    cond1 = abs(eTg(1:3,1:3)-eye(3))<0.5;
+    cond1 = abs(eTg(1:3,1:3)-eye(3))<0.1;
     cond1 = (sum(cond1(:)) == 9);
     
     wTt = wTe*uvms.eTt;
     tTg = inv(wTt)*uvms.wTg;
-    cond2 = (norm(tTg(1:3,4)) <= 0.4);
+    cond2 = (norm(tTg(1:3,4)) <= 0.05);
     output = cond1 && cond2;
 end
