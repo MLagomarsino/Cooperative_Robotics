@@ -25,7 +25,7 @@ uvms.A.target = eye(6);% (uvms.Aexternal.target).*eye(6); % equality objective
 % if altitude < -1.5, A = 0;
 % if altitude > -1, A = 1;
 % in between, there is a smooth behavior.
-uvms.A.minalt = 1;%DecreasingBellShapedFunction(uvms.minAltitude, uvms.minAltitude + 0.5, 0, 1, uvms.altitude);
+uvms.A.minalt = DecreasingBellShapedFunction(uvms.minAltitude, uvms.minAltitude + 0.5, 0, 1, uvms.altitude);
 
 % altitude control
 uvms.A.alt = 1;%*(uvms.Aexternal.alt); % equality objective
@@ -44,5 +44,8 @@ end
      
 % Optimization 
 uvms.A.opt = eye(4);
+
+% constrain vehicle velocity to a given value
+uvms.A.constrained_vel = eye(6);
 
 

@@ -74,24 +74,42 @@ for t = 0:deltat:end_time
     uvms = ComputeJacobians(uvms);
     uvms = ComputeTaskReferences(uvms, mission);
     uvms = ComputeActivationFunctions(uvms, mission);
-  
-    
+ 
     mission.current_time = t;
     
-    % the sequence of iCAT_task calls defines the priority
-    [Qp, rhop, uvms] = taskSequence(uvms, mission);
-    % the sequence of iCAT_task calls defines the priority
-%     [Qp, rhop, uvms] = taskSequence(uvms, mission);
-%     % add all the other tasks here!
+     %% Exercise 5
 %     % the sequence of iCAT_task calls defines the priority
-%     [Qp, rhop] = iCAT_task(uvms.A.mu,   uvms.Jmu,   Qp, rhop, uvms.xdot.mu, 0.000001, 0.0001, 10);
-%     [Qp, rhop] = iCAT_task(uvms.A.ha,   uvms.Jha,   Qp, rhop, uvms.xdot.ha, 0.0001,   0.01, 10);
-%     [Qp, rhop] = iCAT_task(uvms.A.t,    uvms.Jt,    Qp, rhop, uvms.xdot.t,  0.0001,   0.01, 10);
-%     [Qp, rhop] = iCAT_task(eye(13),     eye(13),    Qp, rhop, zeros(13,1),  0.0001,   0.01, 10);    % this task should be the last one
-%     
-    % get the two variables for integration
-    uvms.q_dot = rhop(1:7);
-    uvms.p_dot = rhop(8:13);
+%     [uvms] = taskSequence(uvms, mission);
+    
+    %% Exercise 6
+    
+    if mission.phase == 1
+        % the sequence of iCAT_task calls defines the priority
+        [uvms] = taskSequence(uvms, mission);
+    else
+        % save the current vehicle velocity in a constant variable
+        current_v = uvms.p_dot;
+        
+        % TPIK 1
+        [uvms] = taskSequence(uvms, mission);
+        v1 = uvms.p_dot;
+        % TPIK 2
+        [uvms] = taskSequence(uvms, mission, current_v);
+        q_dot2 = uvms.q_dot;
+        
+        % get the two variables for integration
+        uvms.q_dot = q_dot2;
+        % sinusoidal velocity disturbance wrt world frame
+        a_x = 1;    % amplitude of the sine along x
+        a_y = 1;    % amplitude of the sine along y
+        w = pi;     % frequency of the sine
+        disturbance = sin(w*t)*[a_x a_y 0 0 0 0]';
+        % sinusoidal velocity disturbance wrt vehicle frame
+        disturbance_v = [uvms.vTw(1:3,1:3)  zeros(3); ...
+                         zeros(3)           uvms.vTw(1:3,1:3)]*disturbance;
+        uvms.p_dot = v1 + disturbance_v;
+        
+    end
     
     % Integration
 	uvms.q = uvms.q + uvms.q_dot*deltat;

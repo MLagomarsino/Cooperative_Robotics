@@ -42,7 +42,10 @@ plt.toolx(:,loop) = uvms.wTt(1,4);
 plt.tooly(:,loop) = uvms.wTt(2,4);
 
 plt.altitude(1, loop) = uvms.altitude;
+plt.sensorDistance(1, loop) = uvms.sensorDistance; % add
 plt.misalignment(:, loop) = uvms.misalignment;
 plt.goalreached = (mission.task_completed == sum(mission.tasksPerPhase(mission.Nphases,:)));
+
+plt.toolPos(:, loop) = uvms.wTt(1:3,4);
 
 end

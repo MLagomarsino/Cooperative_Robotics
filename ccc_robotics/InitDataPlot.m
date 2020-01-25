@@ -27,5 +27,8 @@ function [plt] = InitDataPlot( maxloops, mission)
     plt.misalignment = zeros(3, maxloops);
     plt.change_phase = zeros(mission.Nphases);
     plt.Nphases = mission.Nphases;
+    % position of the tool wrt world
+    plt.toolPos = zeros(3, maxloops);
+    plt.minAltitude = 10; 
 end
 

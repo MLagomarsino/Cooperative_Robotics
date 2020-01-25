@@ -64,6 +64,7 @@ uvms.Jha = [zeros(1,7) nphi'*[zeros(3) eye(3)]]; % 1x13
 %% Minimum altitude Jacobian
 % only the z position of the vehicles counts
 uvms.Jminalt = [0 0 1]*[zeros(3,7) uvms.wTv(1:3,1:3) zeros(3,3)];
+% uvms.Jminalt = [0 0 1]*[zeros(3,7) eye(3) zeros(3,3)];
 
 %% Altitude Jacobian
 % only the z position of the vehicles counts
@@ -128,4 +129,6 @@ uvms.Jfixvehicle = [zeros(6,7) eye(6)];
 %% Preferred arm posture Jacobian
 uvms.Jopt =  [eye(4) zeros(4,3) zeros(4,6)];
 
+%% Constrained vehicle velocity to a given value Jacobian
+uvms.Jconstrained_vel = [zeros(6,7) eye(6)];
 end

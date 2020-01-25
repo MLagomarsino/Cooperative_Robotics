@@ -1,10 +1,10 @@
-function [uvms] = taskSequence(uvms, mission, current_v)
+function [uvms] = arm_vehicle_coordination(uvms, mission, current_v)
 
     % main kinematic algorithm initialization
     % rhop order is [qdot_1, qdot_2, ..., qdot_7, xdot, ydot, zdot, omega_x, omega_y, omega_z]
     rhop = zeros(13,1);
     Qp = eye(13); 
-        
+    
     if nargin == 3 % additional input for implementing Arm-Vehicle Coordination Scheme
         % TPIK 2
         % Constrained vehicle velocity to a given value current_v
@@ -43,9 +43,10 @@ function [uvms] = taskSequence(uvms, mission, current_v)
     [Qp, rhop] = iCAT_task(uvms.A.opt_t, uvms.Jopt, Qp, rhop, uvms.xdot.opt,  0.0001,   0.01, 10);
    
     % this task should be the last one
-    [Qp, rhop] = iCAT_task(eye(13), eye(13), Qp, rhop, zeros(13,1),  0.0001,   0.01, 11);    
+    [Qp, rhop] = iCAT_task(eye(13), eye(13), Qp, rhop, zeros(13,1),  0.0001,   0.01, 11);  
     
     % get the two variables for integration
     uvms.q_dot = rhop(1:7);
     uvms.p_dot = rhop(8:13);
+    
 end

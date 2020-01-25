@@ -12,3 +12,8 @@ uvms.vTtarget = uvms.vTw*uvms.wTtarget;
 uvms.vTe = uvms.vTb*uvms.bTe;
 uvms.vTt = uvms.vTe*uvms.eTt;
 uvms.wTt = uvms.wTv*uvms.vTt;
+
+wTe = uvms.wTv*uvms.vTe;
+uvms.eTg = inv(wTe)*uvms.wTg;
+uvms.wTt = wTe*uvms.eTt;
+end

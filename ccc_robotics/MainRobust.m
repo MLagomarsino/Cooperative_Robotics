@@ -6,7 +6,7 @@ close all
 
 % Simulation variables (integration and final time)
 deltat = 0.005;
-end_time = 25;
+end_time = 35;
 loop = 1;
 maxloops = ceil(end_time/deltat);
 
@@ -50,9 +50,9 @@ uvms.q = [-0.0031 0 0.0128 -1.2460 0.0137 0.0853-pi/2 0.0137]';
 % R(rot_x, rot_y, rot_z) = Rz (rot_z) * Ry(rot_y) * Rx(rot_x)
 % ----
 % uvms.p = [10.5 35.5 -36   0 0 pi/2]';     % Ex1.1
-% uvms.p = [48.5 11.5 -33   0 0 -pi/2]';    % Ex1.2
+ uvms.p = [48.5 11.5 -33   pi/4 0 -pi/2]';    % Ex1.2
 % uvms.p = [10.5 37.5 -30   0 -0.06 0.5]';  % Ex2.1
- uvms.p = [8.5 38.5 -36   0 -0.06 0.5]';   % Ex2.2 & Ex3
+% uvms.p = [8.5 38.5 -36   0 -0.06 0.5]';   % Ex2.2 & Ex3
 % uvms.p = [8.5 38.5 -38   0 -0.06 0.5]'; 
 
 % defines the goal position for the end-effector/tool position task
@@ -62,11 +62,13 @@ uvms.wTg = [uvms.wRg uvms.goalPosition; 0 0 0 1]; % transf. matrix w->g
 
 % defines the target position for the vehicle position task
 % uvms.targetPosition = [10.5   37.5  -38]';    % Ex 1.1
+% targetRotation = [pi/2, 0, 0];
 % uvms.wRtarget = rotation(pi/2, 0, 0);
-% uvms.targetPosition = [50  -12.5  -33]';      % Ex1.2
-% uvms.wRtarget = rotation(0, 0, -pi/2);      
-uvms.targetPosition = [10.5  37.5  -38]';     % Ex2.2 & Ex3
-uvms.wRtarget = rotation(0, -0.06, 0.5);
+uvms.targetPosition = [50  -12.5  -33]';      % Ex1.2
+targetRotation = [pi/4, 0, -pi/2];
+uvms.wRtarget = rotation(pi/4, 0, -pi/2);      
+% uvms.targetPosition = [10.5  37.5  -38]';     % Ex2.2 & Ex3
+% uvms.wRtarget = rotation(0, -0.06, 0.5);
 uvms.wTtarget = [uvms.wRtarget uvms.targetPosition; 0 0 0 1]; % transf. matrix w->target
 
 % defines the tool control point
@@ -77,7 +79,10 @@ mission = InitMissionPhase();
 
 % Preallocation
 plt = InitDataPlot(maxloops, mission);
-
+plt.targetPosition = uvms.targetPosition; % vehicle target position
+plt.targetRotation = targetRotation;
+plt.goalPosition = uvms.goalPosition; % tool goal position
+%plt.goalRotation = goalRotation;
 uvms = ComputeActivationFunctions(uvms, mission);
 
 tic
@@ -101,7 +106,8 @@ for t = 0:deltat:end_time
     mission.current_time = t;
     
     % the sequence of iCAT_task calls defines the priority
-    [Qp, rhop, uvms] = taskSequence(uvms, mission);
+    %[Qp, rhop, uvms] = taskSequence(uvms, mission);
+    [uvms] = taskSequence(uvms, mission);
     
     %% EX 1
 %     % minimum altitude task 
@@ -137,9 +143,9 @@ for t = 0:deltat:end_time
     % manipulability
     %[Qp, rhop] = iCAT_task(uvms.A.mu,   uvms.Jmu,   Qp, rhop, uvms.xdot.mu, 0.000001, 0.0001, 10);
     
-    % get the two variables for integration
-    uvms.q_dot = rhop(1:7);
-    uvms.p_dot = rhop(8:13);
+% %     % get the two variables for integration
+% %     uvms.q_dot = rhop(1:7);
+% %     uvms.p_dot = rhop(8:13);
     
     % Integration
 	uvms.q = uvms.q + uvms.q_dot*deltat;
