@@ -23,17 +23,17 @@ plt.p_ddot(:, loop) = uvms.p_ddot;
 plt.xdot_mu(:, loop) = uvms.xdot.mu;
 plt.xdot_t(:, loop) =  blkdiag(uvms.wTv(1:3,1:3), uvms.wTv(1:3,1:3))*uvms.xdot.t;
 
-plt.a(1:7, loop) = diag(uvms.A.jl_t);
-plt.a(8, loop) = uvms.A.mu_t;
-plt.a(9, loop) = uvms.A.ha_t(1,1);
-% ----
-plt.a(10,loop) = uvms.A.target_t(1,1);
-plt.a(11,loop) = uvms.A.minalt_t(1,1);
-plt.a(12,loop) = uvms.A.alt_t(1,1);
-plt.a(13,loop) = uvms.A.la_t(1,1);
-plt.a(14,loop) = uvms.A.fixvehicle_t(6,6);
-plt.a(15,loop) = uvms.A.t_t(1,1);
-plt.a(16,loop) = uvms.A.opt_t(1,1);
+plt.a(1:7, loop) = diag(uvms.A.jl_t);   % joint limits
+plt.a(8, loop) = uvms.A.mu_t;           % manipulability
+plt.a(9, loop) = uvms.A.minalt_t(1,1);  % minimum altitude
+plt.a(10, loop) = uvms.A.ha_t(1,1);     % horizontal attitude
+plt.a(11,loop) = uvms.A.target_t(1,1);  % position vehicle
+plt.a(12,loop) = uvms.A.target_t(4,4);  % orientation vehicle
+plt.a(13,loop) = uvms.A.la_t(1,1);      % longitudinal alignment
+plt.a(14,loop) = uvms.A.alt_t(1,1);     % landing
+plt.a(15,loop) = uvms.A.t_t(1,1);       % tool
+plt.a(16,loop) = uvms.A.fixvehicle_t(1,1); % fix vehicle
+plt.a(17,loop) = uvms.A.opt_t(1,1);     % preferred shape
 
 plt.toolFrameError(:, loop) = uvms.toolFrameError;
 plt.totalError(:, loop) = uvms.totalError;

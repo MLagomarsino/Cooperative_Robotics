@@ -46,7 +46,7 @@ uvms.xi = zeros(3,1);
 uvms.virtualFrameVelocity = zeros(6,1);
 uvms.sensorDistance = 0; % distance of the vehicle from the seafloor measured by the sensor
 % ----
-uvms.minAltitude = 10; % minimum altitude from the seafloor
+uvms.minAltitude = 5; % minimum altitude from the seafloor
 uvms.misalignment = zeros(3,1); % misalignment of the longitudinal axis
 uvms.altitude = uvms.minAltitude + 0.5;
 
@@ -83,11 +83,8 @@ uvms.xdot.la = [];
 
 uvms.A.jl = zeros(7,7);     uvms.A.jl_t = zeros(7,7);
 uvms.A.mu = 0;              uvms.A.mu_t = 0;
-uvms.A.cc = zeros(1,1);     %?????? what is
 uvms.A.ha = zeros(1,1);     uvms.A.ha_t = zeros(1,1);
-uvms.A.t = zeros(6,6);      uvms.A.t = zeros(6,6);
-uvms.A.c = [];     %?????? what is
-uvms.A.ca = zeros(3,3);     %?????? what is
+uvms.A.t = zeros(6,6);      uvms.A.t_t = zeros(6,6);
 % ----
 uvms.A.target = zeros(6,6);         uvms.A.target_t = zeros(6,6);
 uvms.A.minalt = zeros(1,1);         uvms.A.minalt_t = zeros(1,1);

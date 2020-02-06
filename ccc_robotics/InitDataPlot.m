@@ -17,7 +17,7 @@ function [plt] = InitDataPlot( maxloops, mission)
     plt.xdot_mu = zeros(1, maxloops);
     plt.xdot_t = zeros(6, maxloops);
 
-    plt.a = zeros(11, maxloops);
+    plt.a = zeros(17, maxloops); %%%%%%%%%%%% Numero giusto di A
 
     plt.virtualFrameError = zeros(6, maxloops);
     plt.toolFrameError = zeros(6, maxloops);
@@ -29,7 +29,6 @@ function [plt] = InitDataPlot( maxloops, mission)
     plt.Nphases = mission.Nphases;
     % position of the tool wrt world
     plt.toolPos = zeros(3, maxloops);
-    plt.minAltitude = 10; 
-
+    
 end
 

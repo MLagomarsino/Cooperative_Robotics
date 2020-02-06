@@ -32,12 +32,12 @@ function [uvms] = taskSequence(uvms, mission, current_v)
     % altitude control objective
     uvms.A.alt_t = UpdateActivation(uvms.A.alt, mission, 7);
     [Qp, rhop] = iCAT_task(uvms.A.alt_t,   uvms.Jalt,   Qp, rhop, uvms.xdot.alt, 0.0001,   0.01, 10);
-    % fix vehicle position
-    uvms.A.fixvehicle_t = UpdateActivation(uvms.A.fixvehicle, mission, 8);
-    [Qp, rhop] = iCAT_task(uvms.A.fixvehicle_t,    uvms.Jfixvehicle,    Qp, rhop, uvms.xdot.fixvehicle,  0.0001,   0.01, 10);
     % tool-frame position control task
-    uvms.A.t_t = UpdateActivation(uvms.A.t, mission, 9);
+    uvms.A.t_t = UpdateActivation(uvms.A.t, mission, 8);
     [Qp, rhop] = iCAT_task(uvms.A.t_t, uvms.Jt, Qp, rhop, uvms.xdot.t,  0.0001,   0.01, 10);
+    % fix vehicle position
+    uvms.A.fixvehicle_t = UpdateActivation(uvms.A.fixvehicle, mission, 9);
+    [Qp, rhop] = iCAT_task(uvms.A.fixvehicle_t,    uvms.Jfixvehicle,    Qp, rhop, uvms.xdot.fixvehicle,  0.0001,   0.01, 10);
     % optimization control task
     uvms.A.opt_t = UpdateActivation(uvms.A.opt, mission, 10);
     [Qp, rhop] = iCAT_task(uvms.A.opt_t, uvms.Jopt, Qp, rhop, uvms.xdot.opt,  0.0001,   0.01, 10);

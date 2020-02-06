@@ -1,3 +1,4 @@
 *.DS_Store
 ccc_robotics/_*.DS_Store
 Images
+*.pdf

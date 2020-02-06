@@ -72,13 +72,11 @@ xlabel('Time(s)','FontSize',14),ylabel('Activation value','FontSize',14);
 title('\fontsize{16}Activation functions Joint limit task');
 
 figure(4);
-hplot = plot(plt.t(17:end), plt.a([8 9 10 14 15 16],(17:end)));
-%hplot = plot(plt.t(17:end), plt.a([8 9 10 13 12 14 15 16],(17:end)));
-% hplot = plot(plt.t, plt.a([8 9 15 16],:));
-set(hplot, {'LineWidth'}, {2,2,2,2,2,2}', {'LineStyle'}, {'-','-','-','--','-','-'}');
+hplot = plot(plt.t(17:end), plt.a([10 11 12 13 14 15],(17:end)));
+set(hplot,{'LineWidth'}, {2,2,2,2,2,2}', {'LineStyle'}, {'-','-','--','-','--','-'}');
 %set(hplot, {'LineWidth'}, {2,2,2,2,2,4}', {'LineStyle'}, {'-','-','-','-','--','--'}');
 %legend({'Amu','Aha', 'At', 'Aopt'},'interpreter','latex','FontSize',16);
-legend({'Amu','Aha', 'Atarget','Afixvehicle', 'At', 'Aopt'},'interpreter','latex','FontSize',14);
+legend({'Aha','AtargetPos','AtargetOrient','AlongAligh','Aalt','Atool'},'interpreter','latex','FontSize',14);
 % legend({'Amu', 'Aha', 'At', 'Aopt'},'FontSize',14);
 title('\fontsize{16}Activation functions'); 
 xlabel('Time(s)','FontSize',14),ylabel('Activation value','FontSize',14);
@@ -137,7 +135,7 @@ end
 % yline(plt.minAltitude,'-','minAltitude','LabelHorizontalAlignment', 'center','LabelVerticalAlignment', 'middle','FontSize',14);
 title('\fontsize{16}Altitude'); 
 xlabel('Time(s)','FontSize',14),ylabel('Altitude(m)','FontSize',14)
-ylim([0,4])
+% ylim([0,12])
 
 figure(8);
 for i = 1:size(plt.misalignment,2)

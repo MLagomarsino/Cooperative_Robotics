@@ -67,7 +67,8 @@ function [mission] = InitMissionPhase2(exercise)
             mission.tasksPerPhase(2,:) = [0 0 0 1 0 1 1 0 0 0 1];
             mission.exit_conditions(2) = {@exit_phase_landing};
             % Third phase
-            mission.tasksPerPhase(3,:) = [0 0 0 0 0 0 0 0 1 0 1];
+            mission.tasksPerPhase(3,:) = [0 0 0 1 0 1 1 1 0 0 1];
+            % mission.tasksPerPhase(3,:) = [0 0 0 0 0 0 0 1 0 0 1];
             mission.exit_conditions(3) = {@exit_endeffector_pos};
         case '4.1'
             mission.Nphases = 3;
@@ -99,7 +100,7 @@ function [mission] = InitMissionPhase2(exercise)
             mission.Nphases = 1;
             mission.tasksPerPhase = zeros(mission.Nphases, mission.Nobjectives);
             mission.exit_conditions = cell(mission.Nphases,1);
-            mission.tasksPerPhase(1,:) = [1 1 0 1 0 0 0 0 1 1 1];
+            mission.tasksPerPhase(1,:) = [1 1 0 1 0 0 0 1 0 1 1];
             mission.exit_conditions(1) = {@exit_endeffector_pos};
         case '5.2'
             mission.Nphases = 2;
@@ -119,7 +120,7 @@ function [mission] = InitMissionPhase2(exercise)
             mission.tasksPerPhase(1,:) = [0 0 0 1 1 0 0 0 0 0 1];
             mission.exit_conditions(1) = {@exit_phase_target};
             % Second phase
-            mission.tasksPerPhase(2,:) = [1 1 0 1 0 0 0 0 1 1 1]; % check!
+            mission.tasksPerPhase(2,:) = [1 1 0 1 0 0 0 1 0 1 1]; % check!
             mission.exit_conditions(2) = {@exit_endeffector_pos}; % check!
         otherwise
             disp(['Exercise ',exercise,' doesn''t exist'])
@@ -129,26 +130,27 @@ function [mission] = InitMissionPhase2(exercise)
 end
 % Callback for exiting the target reaching phase for the vehicle position
 function [output] = exit_phase_target(uvms)
-    output = norm(uvms.vTtarget(1:3,4)) < 0.4;
-end
-
-function [output] = exit_phase_landing(uvms)
-    cond1 = (uvms.t >= 1);
-    cond2 = (uvms.altitude <= 0.2);
+    [rho, basic_vector] = CartError(uvms.wTv, uvms.wTtarget); 
+    cond1 = (norm(rho) <= 0.3); % orientation
+    cond2 = (norm(basic_vector) <= 0.3); % position
     output = cond1 && cond2;
 end
-
+% Callback for exiting phase: landing on the seafloor
+function [output] = exit_phase_landing(uvms)
+    cond1 = (uvms.t >= 1); % sensor provides strange measurements at the beginning
+    cond2 = (uvms.altitude <= 0.2); % distance from the seafloor
+    output = cond1 && cond2;
+end
+% Callback for exiting phase: landing on the seafloor aligning to the nodule 
 function [output] = exit_phase_landing_withAlignment(uvms)
-    cond1 = (uvms.altitude <= 0.15);
-    cond2 = (norm(uvms.misalignment) <= 0.1);
+    cond1 = (uvms.altitude <= 0.15); % distance from the seafloor
+    cond2 = (norm(uvms.misalignment) <= 0.1); % longitudinal alignment to the nodule
     output = cond1 && cond2;
 end
 % Callback for exiting phase: move end effector to a target position
 function [output] = exit_endeffector_pos(uvms)
     [rho, basic_vector] = CartError(uvms.wTg, uvms.wTt); 
-    % orientation
-    cond1 = (norm(rho) <= 0.4);
-    % position
-    cond2 = (norm(basic_vector) <= 0.2);
+    cond1 = (norm(rho) <= 0.4); % orientation
+    cond2 = (norm(basic_vector) <= 0.2); % position
     output = cond1 && cond2;
 end

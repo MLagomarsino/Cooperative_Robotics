@@ -6,7 +6,7 @@ close all
 
 % Simulation variables (integration and final time)
 deltat = 0.005;
-end_time = 15;
+end_time = 25;
 loop = 1;
 maxloops = ceil(end_time/deltat);
 
@@ -59,18 +59,21 @@ switch(exercise)
         uvms.p = [10.5 35.5 -36   0 0 pi/2]';
         % Target position for the vehicle position task
         uvms.targetPosition = [10.5   37.5  -38]';
-        targetRotation = [pi/2, 0, 0];
-        uvms.wRtarget = rotation(pi/2, 0, 0);
+        targetRotation = [0, 0, 0];
+        uvms.wRtarget = rotation(0, 0, 0);
     case '1.2'
         % Initial position of the vehicle uvms.p
-        uvms.p = [48.5 11.5 -33   pi/4 0 -pi/2]';
+        uvms.p = [48.5 11.5 -33   0 0 -pi/2]';
         % Target position for the vehicle position task
         uvms.targetPosition = [50  -12.5  -33]';
-        targetRotation = [pi/4, 0, -pi/2];
-        uvms.wRtarget = rotation(pi/4, 0, -pi/2); 
+        targetRotation = [0, 0, -pi/2];
+        uvms.wRtarget = rotation(0, 0, -pi/2); 
     case '2.1'
         % Initial position of the vehicle uvms.p
         uvms.p = [10.5 37.5 -30   0 -0.06 0.5]';
+        uvms.targetPosition = zeros(3,1);
+        targetRotation = zeros(3,1);
+        uvms.wRtarget = rotation(0, 0, 0);
     otherwise
         % Initial position of the vehicle uvms.p
         uvms.p = [8.5 38.5 -36   0 -0.06 0.5]';
@@ -120,6 +123,7 @@ plt.targetPosition = uvms.targetPosition; % vehicle target position
 plt.targetRotation = targetRotation;
 plt.goalPosition = uvms.goalPosition; % tool goal position
 %plt.goalRotation = goalRotation;
+plt.minAltitude = uvms.minAltitude; 
 uvms = ComputeActivationFunctions(uvms, mission);
 
 tic

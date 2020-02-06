@@ -12,14 +12,15 @@ uvms.A.mu = DecreasingBellShapedFunction(0.02, 0.05, 0, 1, uvms.mu);
 % if norm(phi) > 0.1,   A = 1;
 % if norm(phi) < 0.025, A = 0;
 % in between, there is a smooth behavior.
-uvms.A.ha = IncreasingBellShapedFunction(0.025, 0.1, 0, 1, norm(uvms.phi));
+uvms.A.ha = IncreasingBellShapedFunction(0.01, 0.02, 0, 1, norm(uvms.phi));
 
 % arm tool position control
-% always active
-uvms.A.t = eye(6);
+uvms.A.t = eye(6); % always active (equality objective)
 
 % vehicle position control 
-uvms.A.target = eye(6);% (uvms.Aexternal.target).*eye(6); % equality objective
+[rho, basic_vector] = CartError(eye(4), uvms.vTtarget); 
+uvms.A.target = [eye(3)*IncreasingBellShapedFunction(0.05, 0.25, 0, 1, norm(basic_vector)),       zeros(3); ...
+                 zeros(3),                  eye(3)*IncreasingBellShapedFunction(0.005, 0.01, 0, 1, norm(rho))]; % (uvms.Aexternal.target).*eye(6);
 
 % minimum altitude
 % if altitude < -1.5, A = 0;
@@ -28,7 +29,7 @@ uvms.A.target = eye(6);% (uvms.Aexternal.target).*eye(6); % equality objective
 uvms.A.minalt = DecreasingBellShapedFunction(uvms.minAltitude, uvms.minAltitude + 0.5, 0, 1, uvms.altitude);
 
 % altitude control
-uvms.A.alt = 1;%*(uvms.Aexternal.alt); % equality objective
+uvms.A.alt = 1; %*(uvms.Aexternal.alt); % equality objective
 
 % longitudinal axis of the vehicle aligned to the rocket
 uvms.A.la = eye(3)*IncreasingBellShapedFunction(0.025, 0.1, 0, 1, norm(uvms.misalignment));
@@ -45,7 +46,5 @@ end
 % Optimization 
 uvms.A.opt = eye(4);
 
-% constrain vehicle velocity to a given value
-uvms.A.constrained_vel = eye(6);
-
+end
 

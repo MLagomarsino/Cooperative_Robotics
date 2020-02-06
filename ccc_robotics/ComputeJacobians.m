@@ -129,7 +129,4 @@ uvms.Jfixvehicle = [zeros(6,7) eye(6)];
 %% Preferred arm posture Jacobian
 uvms.Jopt =  [eye(4) zeros(4,3) zeros(4,6)];
 
-%% Constrained vehicle velocity to a given value Jacobian
-uvms.Jconstrained_vel = [zeros(6,7) eye(6)];
-
 end
