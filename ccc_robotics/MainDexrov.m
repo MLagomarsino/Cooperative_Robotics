@@ -56,15 +56,21 @@ uvms.eTt = eye(4);
 
 % defines the target position for the vehicle position task      
 uvms.targetPosition = pipe_center + (pipe_radius + 1.5)*[0 0 1]';
+targetRotation = [0, -0.06, 0.5];
 uvms.wRtarget = rotation(0, -0.06, 0.5);
 uvms.wTtarget = [uvms.wRtarget uvms.targetPosition; 0 0 0 1]; % transf. matrix w->target
 
+exercise = input('Enter the exercise: ','s');
 % Definition and initialization of missions 
-mission = InitMissionPhase();
+mission = InitMissionPhase2(exercise);
+% mission = InitMissionPhase(exercise);
 
 % Preallocation
 plt = InitDataPlot(maxloops, mission);
-
+plt.targetPosition = uvms.targetPosition; % vehicle target position
+plt.targetRotation = targetRotation;
+plt.goalPosition = uvms.goalPosition; % tool goal position
+%plt.goalRotation = goalRotation;
 uvms = ComputeActivationFunctions(uvms, mission);
 
 tic
@@ -72,45 +78,45 @@ for t = 0:deltat:end_time
     % update all the involved variables
     uvms = UpdateTransforms(uvms);
     uvms = ComputeJacobians(uvms);
-    uvms = ComputeTaskReferences(uvms, mission);
+    uvms = ComputeTaskReferences(uvms);
     uvms = ComputeActivationFunctions(uvms, mission);
  
     mission.current_time = t;
     
-     %% Exercise 5
-%     % the sequence of iCAT_task calls defines the priority
-%     [uvms] = taskSequence(uvms, mission);
-    
-    %% Exercise 6
-    
-    if mission.phase == 1
+    if strcmp(exercise,'5.1') || strcmp(exercise,'5.2')
+        % Exercise 5
         % the sequence of iCAT_task calls defines the priority
         [uvms] = taskSequence(uvms, mission);
     else
-        % save the current vehicle velocity in a constant variable
-        current_v = uvms.p_dot;
-        
-        % TPIK 1
-        [uvms] = taskSequence(uvms, mission);
-        v1 = uvms.p_dot;
-        % TPIK 2
-        [uvms] = taskSequence(uvms, mission, current_v);
-        q_dot2 = uvms.q_dot;
-        
-        % get the two variables for integration
-        uvms.q_dot = q_dot2;
-        % sinusoidal velocity disturbance wrt world frame
-        a_x = 1;    % amplitude of the sine along x
-        a_y = 1;    % amplitude of the sine along y
-        w = pi;     % frequency of the sine
-        disturbance = sin(w*t)*[a_x a_y 0 0 0 0]';
-        % sinusoidal velocity disturbance wrt vehicle frame
-        disturbance_v = [uvms.vTw(1:3,1:3)  zeros(3); ...
-                         zeros(3)           uvms.vTw(1:3,1:3)]*disturbance;
-        uvms.p_dot = v1 + disturbance_v;
-        
+        % Exercise 6
+        if mission.phase == 1
+            % the sequence of iCAT_task calls defines the priority
+            [uvms] = taskSequence(uvms, mission);
+        else
+            % save the current vehicle velocity in a constant variable
+            current_v = uvms.p_dot;
+
+            % TPIK 1
+            [uvms] = taskSequence(uvms, mission);
+            v1 = uvms.p_dot;
+            % TPIK 2
+            [uvms] = taskSequence(uvms, mission, current_v);
+            q_dot2 = uvms.q_dot;
+
+            % get the two variables for integration
+            uvms.q_dot = q_dot2;
+            % sinusoidal velocity disturbance wrt world frame
+            a_x = 1;    % amplitude of the sine along x
+            a_y = 1;    % amplitude of the sine along y
+            w = pi;     % frequency of the sine
+            disturbance = sin(w*t)*[a_x a_y 0 0 0 0]';
+            % sinusoidal velocity disturbance wrt vehicle frame
+            disturbance_v = [uvms.vTw(1:3,1:3)  zeros(3); ...
+                             zeros(3)           uvms.vTw(1:3,1:3)]*disturbance;
+            uvms.p_dot = v1 + disturbance_v;
+
+        end
     end
-    
     % Integration
 	uvms.q = uvms.q + uvms.q_dot*deltat;
     % beware: p_dot should be projected on <v>
@@ -128,8 +134,10 @@ for t = 0:deltat:end_time
    
     % add debug prints here
     if (mod(t,0.1) == 0 && ~(plt.goalreached))
-        t
-        uvms.p'
+        disp(['Time:             ',num2str(t)]);
+        disp(['Phase:            ',num2str(mission.phase)]);
+        disp(['Vehicle position: ',num2str(uvms.p')]);
+        disp('- - - - - - - - -');
     end
     
     % enable this to have the simulation approximately evolving like real

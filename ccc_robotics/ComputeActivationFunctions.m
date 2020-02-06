@@ -12,7 +12,7 @@ uvms.A.mu = DecreasingBellShapedFunction(0.02, 0.05, 0, 1, uvms.mu);
 % if norm(phi) > 0.1,   A = 1;
 % if norm(phi) < 0.025, A = 0;
 % in between, there is a smooth behavior.
-uvms.A.ha = 1;%IncreasingBellShapedFunction(0.025, 0.1, 0, 1, norm(uvms.phi));
+uvms.A.ha = IncreasingBellShapedFunction(0.025, 0.1, 0, 1, norm(uvms.phi));
 
 % arm tool position control
 % always active
@@ -31,17 +31,17 @@ uvms.A.minalt = DecreasingBellShapedFunction(uvms.minAltitude, uvms.minAltitude 
 uvms.A.alt = 1;%*(uvms.Aexternal.alt); % equality objective
 
 % longitudinal axis of the vehicle aligned to the rocket
-uvms.A.la = eye(3);%IncreasingBellShapedFunction(0.025, 0.1, 0, 1, norm(uvms.misalignment));
+uvms.A.la = eye(3)*IncreasingBellShapedFunction(0.025, 0.1, 0, 1, norm(uvms.misalignment));
 
 % fix vehicle velocity
 uvms.A.fixvehicle = eye(6);
 
 % Joint limit
 for i = 1:length(uvms.q)
-    uvms.A.jl(i,i) = DecreasingBellShapedFunction(uvms.jlmin(i),uvms.jlmin(i) + 0.5,0,1,uvms.q(i)) + ...
-                    IncreasingBellShapedFunction(uvms.jlmax(i)-0.5,uvms.jlmax(i),0,1,uvms.q(i));
+    uvms.A.jl(i,i) = DecreasingBellShapedFunction(uvms.jlmin(i),uvms.jlmin(i) + 0.3,0,1,uvms.q(i)) + ...
+                    IncreasingBellShapedFunction(uvms.jlmax(i) - 0.3,uvms.jlmax(i),0,1,uvms.q(i));
 end
-     
+
 % Optimization 
 uvms.A.opt = eye(4);
 

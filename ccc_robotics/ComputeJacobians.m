@@ -17,7 +17,7 @@ function [uvms] = ComputeJacobians(uvms)
 % where m is the row dimension of the task, and of its reference rate
 
 %% Joint limit Jacobian
-uvms.Jjl =  [zeros(7) eye(7,6)]; % 7 joints
+uvms.Jjl =  [eye(7) zeros(7,6)]; % 7 joints
 
 %% Manipulability Jacobian
 [Jmu_a, uvms.mu] = ComputeManipulability(uvms.bJe, uvms.djdq);
@@ -131,4 +131,5 @@ uvms.Jopt =  [eye(4) zeros(4,3) zeros(4,6)];
 
 %% Constrained vehicle velocity to a given value Jacobian
 uvms.Jconstrained_vel = [zeros(6,7) eye(6)];
+
 end

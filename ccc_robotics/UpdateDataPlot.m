@@ -23,7 +23,7 @@ plt.p_ddot(:, loop) = uvms.p_ddot;
 plt.xdot_mu(:, loop) = uvms.xdot.mu;
 plt.xdot_t(:, loop) =  blkdiag(uvms.wTv(1:3,1:3), uvms.wTv(1:3,1:3))*uvms.xdot.t;
 
-plt.a(1:7, loop) = diag(uvms.A.jl);
+plt.a(1:7, loop) = diag(uvms.A.jl_t);
 plt.a(8, loop) = uvms.A.mu_t;
 plt.a(9, loop) = uvms.A.ha_t(1,1);
 % ----
@@ -47,5 +47,8 @@ plt.misalignment(:, loop) = uvms.misalignment;
 plt.goalreached = (mission.task_completed == sum(mission.tasksPerPhase(mission.Nphases,:)));
 
 plt.toolPos(:, loop) = uvms.wTt(1:3,4);
+
+plt.jointMax = uvms.jlmax;
+plt.jointMin = uvms.jlmin;
 
 end

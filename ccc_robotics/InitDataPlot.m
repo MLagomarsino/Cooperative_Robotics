@@ -30,5 +30,6 @@ function [plt] = InitDataPlot( maxloops, mission)
     % position of the tool wrt world
     plt.toolPos = zeros(3, maxloops);
     plt.minAltitude = 10; 
+
 end
 
