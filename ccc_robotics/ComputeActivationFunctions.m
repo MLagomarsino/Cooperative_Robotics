@@ -20,7 +20,7 @@ uvms.A.t = eye(6); % always active (equality objective)
 % vehicle position control 
 [rho, basic_vector] = CartError(eye(4), uvms.vTtarget); 
 uvms.A.target = [eye(3)*IncreasingBellShapedFunction(0.05, 0.25, 0, 1, norm(basic_vector)),       zeros(3); ...
-                 zeros(3),                  eye(3)*IncreasingBellShapedFunction(0.005, 0.01, 0, 1, norm(rho))]; % (uvms.Aexternal.target).*eye(6);
+                 zeros(3),                  eye(3)*IncreasingBellShapedFunction(0.005, 0.01, 0, 1, norm(rho))]; % (uvms.Aexternal.target);
 
 % minimum altitude
 % if altitude < -1.5, A = 0;
@@ -31,7 +31,7 @@ uvms.A.minalt = DecreasingBellShapedFunction(uvms.minAltitude, uvms.minAltitude 
 % altitude control
 uvms.A.alt = 1; %*(uvms.Aexternal.alt); % equality objective
 
-% longitudinal axis of the vehicle aligned to the rocket
+% longitudinal axis of the vehicle aligned to the nodule
 uvms.A.la = eye(3)*IncreasingBellShapedFunction(0.025, 0.1, 0, 1, norm(uvms.misalignment));
 
 % fix vehicle velocity
@@ -39,12 +39,18 @@ uvms.A.fixvehicle = eye(6);
 
 % Joint limit
 for i = 1:length(uvms.q)
-    uvms.A.jl(i,i) = DecreasingBellShapedFunction(uvms.jlmin(i),uvms.jlmin(i) + 0.3,0,1,uvms.q(i)) + ...
-                    IncreasingBellShapedFunction(uvms.jlmax(i) - 0.3,uvms.jlmax(i),0,1,uvms.q(i));
+    uvms.A.jl(i,i) = DecreasingBellShapedFunction(uvms.jlmin(i),uvms.jlmin(i) + 0.6,0,1,uvms.q(i)) + ...
+                    IncreasingBellShapedFunction(uvms.jlmax(i) - 0.6,uvms.jlmax(i),0,1,uvms.q(i));
 end
 
 % Optimization 
-uvms.A.opt = eye(4);
+error_q =  uvms.preferred_shape - uvms.q(1:length(uvms.preferred_shape));
+for i = 1:length(uvms.preferred_shape)
+    uvms.A.opt(i,i) = IncreasingBellShapedFunction(uvms.preferred_shape(i) - 0.1, uvms.preferred_shape(i),0,1,norm(error_q(i)));
+end
+
+% constrain vehicle velocity to a given value
+uvms.A.constrained_vel = eye(6);
 
 end
 

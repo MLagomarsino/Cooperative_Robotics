@@ -6,7 +6,9 @@ function [ ] = PrintPlot( plt )
 figure(1);
 sgtitle('\fontsize{16}Arm')
 subplot(2,1,1);
+hold on    
 hplot = plot(plt.t, plt.q);
+hold off
 set(hplot, 'LineWidth', 1.5);
 % for j = 1:7
 %     yline(plt.jointMax(j,1),'-','jl_{max}','LabelHorizontalAlignment', 'center','LabelVerticalAlignment', 'middle','FontSize',14);
@@ -18,8 +20,13 @@ end
 if plt.goalreached
     xline(plt.change_phase(plt.Nphases+1), '--r', 'Goal reached');
 end
-% yline(plt.jointMax(6,1),'-','jl_{6max}','LabelHorizontalAlignment', 'center','LabelVerticalAlignment', 'middle','FontSize',14);
+ yline(plt.jointMax(2,1),'-','jl_{2max}','LabelHorizontalAlignment', 'center','LabelVerticalAlignment', 'middle','FontSize',14);
 % yline(plt.jointMin(6,1),'-','jl_{6min}','LabelHorizontalAlignment', 'center','LabelVerticalAlignment', 'middle','FontSize',14);
+preferred_shape = [-0.0031 1.2586 0.0128 -1.2460]';
+yline(preferred_shape(1),'-','$\bar{q}_1\ \ \ \bar{q}_3$','LabelHorizontalAlignment', 'center','LabelVerticalAlignment', 'middle','interpreter','latex','FontSize',14);
+yline(preferred_shape(2),'-','$\bar{q}_2$','interpreter','latex','LabelHorizontalAlignment', 'center','LabelVerticalAlignment', 'middle','FontSize',14);
+%yline(preferred_shape(3),'-','$\bar{q}_3$','interpreter','latex','LabelHorizontalAlignment', 'center','LabelVerticalAlignment', 'middle','FontSize',14);
+yline(preferred_shape(4),'-','$\bar{q}_4$','interpreter','latex','LabelHorizontalAlignment', 'center','LabelVerticalAlignment', 'middle','FontSize',14);
 
 legend({'$q_1$','$q_2$','$q_3$','$q_4$','$q_5$','$q_6$','$q_7$'},'interpreter','latex','FontSize',16);
 title('\fontsize{16}Joint vector'),
@@ -72,11 +79,11 @@ xlabel('Time(s)','FontSize',14),ylabel('Activation value','FontSize',14);
 title('\fontsize{16}Activation functions Joint limit task');
 
 figure(4);
-hplot = plot(plt.t(17:end), plt.a([10 11 12 13 14 15],(17:end)));
-set(hplot,{'LineWidth'}, {2,2,2,2,2,2}', {'LineStyle'}, {'-','-','--','-','--','-'}');
+hplot = plot(plt.t(17:end), plt.a([8 10 15 17],(17:end)));
+set(hplot,{'LineWidth'}, {2,2,2,2}', {'LineStyle'}, {'-','-','-','--'}');
 %set(hplot, {'LineWidth'}, {2,2,2,2,2,4}', {'LineStyle'}, {'-','-','-','-','--','--'}');
-%legend({'Amu','Aha', 'At', 'Aopt'},'interpreter','latex','FontSize',16);
-legend({'Aha','AtargetPos','AtargetOrient','AlongAligh','Aalt','Atool'},'interpreter','latex','FontSize',14);
+legend({'Amu','Aha', 'At', 'Aopt'},'interpreter','latex','FontSize',16);
+% legend({'Aha','AtargetPos','AtargetOrient','AlongAligh','Aalt','Atool'},'interpreter','latex','FontSize',14);
 % legend({'Amu', 'Aha', 'At', 'Aopt'},'FontSize',14);
 title('\fontsize{16}Activation functions'); 
 xlabel('Time(s)','FontSize',14),ylabel('Activation value','FontSize',14);

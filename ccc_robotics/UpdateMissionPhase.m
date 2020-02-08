@@ -25,7 +25,7 @@ function [uvms, mission,plt] = UpdateMissionPhase(uvms, mission, plt)
                     end
                 else
                     fprintf(2,"---------------- Start transition ----------------\n");
-                    mission.phase = mission.phase + 1;
+                    mission.phase = mission.phase + 1; % update mission
                     plt.change_phase(mission.phase) = mission.current_time;
                     mission.in_transition = 1;
                     mission.start_transition = mission.current_time;

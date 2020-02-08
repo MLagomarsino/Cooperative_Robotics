@@ -73,17 +73,22 @@ uvms.Jalt = [0 0 1]*[zeros(3,7) uvms.wTv(1:3,1:3) zeros(3,3)];
 %% Alignment of longitudinal axis of the vehicle towards the nodule
 rock_center = [12.2025   37.3748  -39.8860]';
 % vector joining the vehicle frame to the nodule frame wrt w
-w_basic_vector_vn = rock_center - uvms.wTv(1:3,4);
+w_vector_vn = rock_center - uvms.wTv(1:3,4);
 % projected on v
-v_basic_vector_vn = (uvms.wTv(1:3,1:3))' * w_basic_vector_vn;
+v_vector_vn = (uvms.wTv(1:3,1:3))' * w_vector_vn;
+
+% Projection matrix on inertial xy plane
+Pxy = [1 0 0; 0 1 0; 0 0 0];
+
 % projection on the inertial horizontal plane (third component = 0)
-% v_bv_n(3) = 0;
-projected_bv_vn = [1 0 0; 0 1 0; 0 0 0] * v_basic_vector_vn;
+w_projection_vector_vn = Pxy * w_vector_vn;
+% projection projected on v
+v_projection_vector_vn = (uvms.wTv(1:3,1:3))' * w_projection_vector_vn;
 % unit vector joining the vehicle frame to the nodule frame
-v_uv_n = projected_bv_vn/norm(projected_bv_vn);%b
+v_uv_n = v_projection_vector_vn/norm(v_projection_vector_vn); % b
 
 % vector axis i of the vehicle frame
-iv = [1 0 0]'; %a
+iv = [1 0 0]'; % a
 
 % Misalignment vector
 uvms.misalignment = ReducedVersorLemma(v_uv_n, iv);
@@ -98,35 +103,22 @@ unit_n = uvms.misalignment/theta;
 Pn = unit_n * unit_n';
 
 % Controlling the norm
-% uvms.Jla = unit_n'*[zeros(3,7)  Pn*(1/(norm(v_basic_vector_vn)^2))*skew(v_basic_vector_vn)*[1 0 0;0 1 0;0 0 0]  Pn]; % 1x13
+% uvms.Jla = unit_n'*[zeros(3,7)  Pn*(1/(norm(v_vector_vn)^2))*skew(v_vector_vn)*Pxy  Pn]; % 1x13
 % uvms.Jla = unit_n'*[zeros(3,7)  zeros(3)  Pn];
-% uvms.Jla = unit_n'*[zeros(3,7)  Pn*(1/(norm(v_basic_vector_vn)^2))*skew(v_basic_vector_vn)*[1 0 0;0 1 0;0 0 0]  zeros(3)];
+% uvms.Jla = unit_n'*[zeros(3,7)  Pn*(1/(norm(v_vector_vn)^2))*skew(v_vector_vn)*Pxy  zeros(3)];
 
 % Controlling 3 degrees of freedom : wb/a = unit_n*lambda*theta
-uvms.Jla = [zeros(3,7)  (1/(norm(v_basic_vector_vn)^2))*skew(v_basic_vector_vn)*[1 0 0;0 1 0;0 0 0]  eye(3)]; % 3x13
-% uvms.Jla = [zeros(3,7)  (-1/(norm(v_basic_vector_vn)^2))*skew(v_basic_vector_vn)*[1 0 0;0 1 0;0 0 0]  zeros(3)]; % 3x13
-% uvms.Jla = [zeros(3,7)  zeros(3) -eye(3)]; % 3x13
-%N_theta = skew(v_uv_n)*skew(iv)*(Pn - eye(3));
-
-%uvms.Jla = [zeros(3,7) (Pn+N_theta)*(-1/(norm(w_basic_vector_vn)^2))*skew(w_basic_vector_vn) -(skew(uvms.misalignment) + Pn + N_theta)];
-% uvms.Jla = [zeros(3,7) -1/(norm(w_basic_vector_vn)^2)*Pn*skew(w_basic_vector_vn) -(skew(uvms.misalignment) + Pn)];
-% uvms.Jla = [zeros(3,7) zeros(3) -(skew(uvms.misalignment) + Pn + N_theta)];
-% uvms.Jla = [zeros(3,7) (Pn+N_theta)*(-1/(norm(w_basic_vector_vn)^2))*skew(w_basic_vector_vn) zeros(3)];
-
-% Jl_la = -1/norm(basic_vector_vn)*Pn*skew(basic_vector_vn);
-% Ja_la = -(skew(uvms.misalignment) + Pn);
-% uvms.Jla = [zeros(3,7) Jl_la Ja_la]
-% Jl_la = [zeros(3,7) -1/norm(basic_vector_vn)*Pn*skew(basic_vector_vn) zeros(3)];
-% Ja_la = [zeros(3,7) zeros(3) -(skew(uvms.misalignment) + Pn)];
- 
-% ---- misalignment vector axis i of the vehicle frame wrt projection, 
-% on the inertial horizontal plane, of the unit vector joining the vehicle 
-% frame to the nodule frame. 
+uvms.Jla = [zeros(3,7)  (1/(norm(v_vector_vn)^2))*skew(v_vector_vn)*Pxy  eye(3)]; % 3x13
+% uvms.Jla = [zeros(3,7)  (1/(norm(v_vector_vn)^2))*skew(v_vector_vn)*Pxy zeros(3)]; % linear control
+% uvms.Jla = [zeros(3,7)  zeros(3) eye(3)]; % angular control
 
 %% Fixing vehicle velocity Jacobian
 uvms.Jfixvehicle = [zeros(6,7) eye(6)];
 
 %% Preferred arm posture Jacobian
 uvms.Jopt =  [eye(4) zeros(4,3) zeros(4,6)];
+
+%% Constrained vehicle velocity to a given value Jacobian
+uvms.Jconstrained_vel = [zeros(6,7) eye(6,6)];
 
 end

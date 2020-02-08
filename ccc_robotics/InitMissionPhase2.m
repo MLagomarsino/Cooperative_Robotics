@@ -2,7 +2,7 @@ function [mission] = InitMissionPhase2(exercise)
     
     % Definition of the mission (fixed)
     mission.transition_interval = 5; % interval of the transition between 2 phases
-    mission.Nobjectives = 11;     % total number of tasks 
+    mission.Nobjectives = 11;        % total number of tasks 
 
     % Time variables (changing during execution)
     mission.current_time = 0;
@@ -55,7 +55,7 @@ function [mission] = InitMissionPhase2(exercise)
             mission.exit_conditions(1) = {@exit_phase_target};
             % Second phase
             mission.tasksPerPhase(2,:) = [0 0 0 1 0 1 1 0 0 0 1];
-            mission.exit_conditions(2) = {@exit_phase_landing};
+            mission.exit_conditions(2) = {@exit_phase_landing_withAlignment};
         case '3.1.4'
             mission.Nphases = 3;
             mission.tasksPerPhase = zeros(mission.Nphases, mission.Nobjectives);
@@ -65,7 +65,7 @@ function [mission] = InitMissionPhase2(exercise)
             mission.exit_conditions(1) = {@exit_phase_target};
             % Second phase
             mission.tasksPerPhase(2,:) = [0 0 0 1 0 1 1 0 0 0 1];
-            mission.exit_conditions(2) = {@exit_phase_landing};
+            mission.exit_conditions(2) = {@exit_phase_landing_withAlignment};
             % Third phase
             mission.tasksPerPhase(3,:) = [0 0 0 1 0 1 1 1 0 0 1];
             % mission.tasksPerPhase(3,:) = [0 0 0 0 0 0 0 1 0 0 1];
@@ -125,7 +125,7 @@ function [mission] = InitMissionPhase2(exercise)
         otherwise
             disp(['Exercise ',exercise,' doesn''t exist'])
             exercise = input('Enter the exercise: ','s');
-            InitMissionPhase2(exercise);
+            mission = InitMissionPhase2(exercise);
     end
 end
 % Callback for exiting the target reaching phase for the vehicle position
