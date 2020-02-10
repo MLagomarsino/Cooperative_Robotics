@@ -8,6 +8,8 @@ Set of exercises for Cooperative Robotics course:
   4. Implementing a Fixed-base Manipulation Action
   5. Floating Manipulation
   6. Floating Manipulation with Arm-Vehicle Coordination Scheme
+
+The implementation exploits the functionalities of the powerful MATLAB environment.
  
 ## Authors
 | Name | E-mail | ID |
@@ -15,6 +17,4 @@ Set of exercises for Cooperative Robotics course:
 | Luna Gava| lunagava@me.com | 4206721 |
 | Marta Lagomarsino | marta.lago@hotmail.it | 4213518 |
 
-## How to run the project
 
-The implementation exploits the functionalities of the powerful MATLAB environment.
