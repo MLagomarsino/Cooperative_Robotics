@@ -1,8 +1,8 @@
-function [mission] = InitMissionPhase()
+function [mission] = InitMissionPhase(nPhases, activeTasks, exitCondition)
     
     % Definition of the mission (fixed)
     mission.transition_interval = 5; % interval of the transition between 2 phases
-    mission.Nphases = 2;    % number of phases
+    mission.Nphases = nPhases;    % number of phases
     mission.Nobjectives = 11;     % total number of tasks 
 
     % Time variables (changing during execution)
@@ -18,35 +18,24 @@ function [mission] = InitMissionPhase()
     % matrix identifying the active tasks in each phase
     mission.tasksPerPhase = zeros(mission.Nphases, mission.Nobjectives);
     mission.exit_conditions = cell(mission.Nphases,1);
-
-    %% First phase
-    % active tasks 
-%     mission.tasksPerPhase(1,:) = [0 0 0 1 1 0 0 0 0 0 1]; % Ex1.1
-%     mission.tasksPerPhase(1,:) = [0 0 1 1 1 0 0 0 0 0 1]; % Ex1.2
-%     mission.tasksPerPhase(1,:) = [0 0 0 1 0 0 1 0 0 0 1]; % Ex2.1
-%     mission.tasksPerPhase(1,:) = [0 0 0 1 1 0 0 0 0 0 1]; % Ex2.2 & 3 & 4
-%     mission.tasksPerPhase(1,:) = [1 1 0 1 0 0 0 0 1 1 1]; % Ex5.1 with preferred shape
-    mission.tasksPerPhase(1,:) = [0 0 0 1 1 0 0 0 0 0 1]; % Ex5.2
-    % exit condition from first phase
-    mission.exit_conditions(1) = {@exit_phase_target}; % callback
-%     mission.exit_conditions(1) = {@exit_phase_landing}; % Ex2.1
-%     mission.exit_conditions(1) = {@exit_endeffector_pos}; % Ex5.1 only
-    %% Second phase
-%     mission.tasksPerPhase(2,:) = [0 0 0 1 0 0 1 0 0 0 1]; % Ex2.2
-%     mission.tasksPerPhase(2,:) = [0 0 0 1 0 1 1 0 0 0 1]; % Ex3 & 4
-    mission.tasksPerPhase(2,:) = [1 1 0 1 0 0 0 1 1 1 1]; % Ex5.2
-%     mission.tasksPerPhase(2,:) = [1 1 0 1 0 0 0 0 1 1 1]; % Ex6
-%     mission.exit_conditions(2) = {@exit_phase_landing}; % Ex2.2
-%     mission.exit_conditions(2) = {@exit_phase_landing_withAlignment}; % Ex3
-    mission.exit_conditions(2) = {@exit_endeffector_pos}; % Ex5.2
     
-    %% Third phase
-%     mission.tasksPerPhase(3,:) = [0 0 0 0 0 0 0 0 1 0 1]; % Ex3
-%     mission.tasksPerPhase(3,:) = [0 0 0 0 0 0 0 1 1 0 1]; % Ex4
-%     mission.tasksPerPhase(3,:) = [1 1 0 0 0 0 0 1 1 0 1]; % Ex4.2
-    mission.exit_conditions(3) = {@exit_endeffector_pos}; % Ex3 & Ex4
+    for i = 1:nPhases
+        % active tasks 
+        mission.tasksPerPhase(i,:) = [activeTasks(i,:) 1];
+        % exit condition
+        if (exitCondition(i) == 1)
+            mission.exit_conditions(i) = {@exit_phase_target};
+        elseif (exitCondition(i) == 2)
+            mission.exit_conditions(i) = {@exit_phase_landing};
+        elseif (exitCondition(i) == 3)
+            mission.exit_conditions(i) = {@exit_phase_landing_withAlignment};
+        else
+            mission.exit_conditions(i) = {@exit_endeffector_pos};
+        end
+    end
 end
-% Callback for exiting the target reaching phase for the vehicle position
+
+%% Callback for exiting the target reaching phase for the vehicle position
 function [output] = exit_phase_target(uvms)
     output = norm(uvms.vTtarget(1:3,4)) < 0.4;
 end

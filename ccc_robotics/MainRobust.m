@@ -1,3 +1,7 @@
+%% Cooperative Robotics
+%  Group: Gava Luna, Lagomarsino Marta
+% ------------------------------------------------------------
+
 %function MainRobust
 addpath('./simulation_scripts');
 clc;
@@ -43,12 +47,12 @@ uvms = InitUVMS('Robust');
 % different starting position for the arm
 uvms.q = [-0.0031 0 0.0128 -1.2460 0.0137 0.0853-pi/2 0.0137]'; 
 
-exercise = input('Enter the exercise: ','s');
-% Definition and initialization of missions 
-mission = InitMissionPhase2(exercise);
-% mission = InitMissionPhase(exercise);
-
-switch(exercise)
+option = input(['1 -> to perform an exercise,' newline '0 -> to enter specific objectives:  ']);
+if option
+    exercise = input('  Enter the exercise: ','s');
+    % Definition and initialization of missions 
+    mission = InitMissionPhase2(exercise);
+    switch(exercise)
     case '1.1'
         % Initial position of the vehicle uvms.p
         % the vector contains the values in the following order
@@ -58,41 +62,29 @@ switch(exercise)
         % ----
         uvms.p = [10.5 35.5 -36   0 0 pi/2]';
         % Target position for the vehicle position task
-        uvms.targetPosition = [10.5   37.5  -38]';
-        targetRotation = [0, 0, 0];
-        uvms.wRtarget = rotation(0, 0, 0);
+        vehicleTarget = [10.5   37.5  -38  0  0  0];
     case '1.2'
-        % Initial position of the vehicle uvms.p
         uvms.p = [48.5 11.5 -33   0 0 -pi/2]';
-        % Target position for the vehicle position task
-        uvms.targetPosition = [50  -12.5  -33]';
-        targetRotation = [0, 0, -pi/2];
-        uvms.wRtarget = rotation(0, 0, -pi/2); 
+        vehicleTarget = [50  -12.5  -33  0  0  -pi/2];
     case '2.1'
-        % Initial position of the vehicle uvms.p
         uvms.p = [10.5 37.5 -30   0 -0.06 0.5]';
-        uvms.targetPosition = zeros(3,1);
-        targetRotation = zeros(3,1);
-        uvms.wRtarget = rotation(0, 0, 0);
+        vehicleTarget = zeros(1,6);
     otherwise
-        % Initial position of the vehicle uvms.p
         uvms.p = [8.5 38.5 -36   0 -0.06 0.5]';
-        % Target position for the vehicle position task
-        uvms.targetPosition = [10.5  37.5  -38]';
-        targetRotation = [0, -0.06, 0.5];
-        uvms.wRtarget = rotation(0, -0.06, 0.5);
+        vehicleTarget = [10.5  37.5  -38  0  -0.06  0.5];
+    end
+else
+    nPhases = input('  Enter number of phases: ');
+    activeTasks = input('  Enter active tasks (vector 1x10): ');
+    exitCondition = input(['  Enter exit condition:' newline '1 -> vehicle reaching target position' ...
+                            newline '2 -> vehicle reaching target position' ...
+                            newline '3 -> vehicle landing on the seafloor' ...
+                            newline '4 -> vehicle landing on the seafloor aligning to the nodule:  ']);
+    mission = InitMissionPhase(1,activeTasks, exitCondition);
+    initialPos = input('  Initial position of the vehicle: ');
+    uvms.p = initialPos';
+    vehicleTarget = input('  Target position of the vehicle: ');
 end
-% Initial position of the vehicle uvms.p
-% the vector contains the values in the following order
-% [x y z r(rot_x) p(rot_y) y(rot_z)]
-% RPY angles are applied in the following sequence
-% R(rot_x, rot_y, rot_z) = Rz (rot_z) * Ry(rot_y) * Rx(rot_x)
-% ----
-% uvms.p = [10.5 35.5 -36   0 0 pi/2]';     % Ex1.1
-% uvms.p = [48.5 11.5 -33   pi/4 0 -pi/2]';    % Ex1.2
-% uvms.p = [10.5 37.5 -30   0 -0.06 0.5]';  % Ex2.1
-% uvms.p = [8.5 38.5 -36   0 -0.06 0.5]';   % Ex2.2 & Ex3 & Ex4
-% uvms.p = [8.5 38.5 -38   0 -0.06 0.5]'; 
 
 % defines the goal position for the end-effector/tool position task
 uvms.goalPosition = [12.2025   37.3748  -39.8860]';
@@ -100,17 +92,8 @@ uvms.wRg = rotation(0, pi, pi/2);
 uvms.wTg = [uvms.wRg uvms.goalPosition; 0 0 0 1]; % transf. matrix w->g
 
 % defines the target position for the vehicle position task
-% uvms.targetPosition = [10.5   37.5  -38]';    % Ex 1.1
-% targetRotation = [pi/2, 0, 0];
-% uvms.wRtarget = rotation(pi/2, 0, 0);
-% uvms.targetPosition = [50  -12.5  -33]';      % Ex1.2
-% targetRotation = [pi/4, 0, -pi/2];
-% uvms.wRtarget = rotation(pi/4, 0, -pi/2);      
-% uvms.targetPosition = [10.5  37.5  -38]';     % Ex2.2 & Ex3 & Ex4
-% targetRotation = [0, -0.06, 0.5];
-% uvms.wRtarget = rotation(0, -0.06, 0.5);
-
-% defines the target position for the vehicle position task
+uvms.targetPosition = vehicleTarget(1:3)';
+uvms.wRtarget = rotation(vehicleTarget(4), vehicleTarget(5), vehicleTarget(6));
 uvms.wTtarget = [uvms.wRtarget uvms.targetPosition; 0 0 0 1]; % transf. matrix w->target
 
 % defines the tool control point
@@ -120,7 +103,7 @@ uvms.t = 0;
 % Preallocation
 plt = InitDataPlot(maxloops, mission);
 plt.targetPosition = uvms.targetPosition; % vehicle target position
-plt.targetRotation = targetRotation;
+plt.targetRotation = vehicleTarget(4:6);
 plt.goalPosition = uvms.goalPosition; % tool goal position
 %plt.goalRotation = goalRotation;
 plt.minAltitude = uvms.minAltitude; 

@@ -1,20 +1,16 @@
 function [uvms] = ComputeJacobians(uvms)
-% compute the relevant Jacobians here
-% joint limits
-% manipulability
-% tool-frame position control
-% vehicle-frame position control
-% horizontal attitude 
-% minimum altitude
-% preferred arm posture ( [-0.0031 1.2586 0.0128 -1.2460] )
+% The function computes the relevant Jacobians
+%  - joint limits
+%  - manipulability
+%  - tool-frame position control
+%  - vehicle-frame position control
+%  - horizontal attitude 
+%  - minimum altitude
+%  - preferred arm posture ( [-0.0031 1.2586 0.0128 -1.2460] )
 %
-% remember: the control vector is:
+% the control vector is:
 % [q_dot; p_dot] 
 % [qdot_1, qdot_2, ..., qdot_7, xdot, ydot, zdot, omega_x, omega_y, omega_z]
-%
-% therefore all task jacobians should be of dimensions
-% m x 13
-% where m is the row dimension of the task, and of its reference rate
 
 %% Joint limit Jacobian
 uvms.Jjl =  [eye(7) zeros(7,6)]; % 7 joints
@@ -117,8 +113,5 @@ uvms.Jfixvehicle = [zeros(6,7) eye(6)];
 
 %% Preferred arm posture Jacobian
 uvms.Jopt =  [eye(4) zeros(4,3) zeros(4,6)];
-
-%% Constrained vehicle velocity to a given value Jacobian
-uvms.Jconstrained_vel = [zeros(6,7) eye(6,6)];
 
 end

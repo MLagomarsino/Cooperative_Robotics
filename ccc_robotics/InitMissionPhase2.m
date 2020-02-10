@@ -15,7 +15,7 @@ function [mission] = InitMissionPhase2(exercise)
     mission.end_transition = 0;
 
     switch(exercise)
-        case '1.1'
+        case '1.1' % ----- Safe Waypoint Navigation ----- Robust
             mission.Nphases = 1;    % number of phases
             % matrix identifying the active tasks in each phase
             mission.tasksPerPhase = zeros(mission.Nphases, mission.Nobjectives);
@@ -24,19 +24,19 @@ function [mission] = InitMissionPhase2(exercise)
             mission.tasksPerPhase(1,:) = [0 0 0 1 1 0 0 0 0 0 1]; % Ex1.1
             % exit condition from first phase
             mission.exit_conditions(1) = {@exit_phase_target}; % callback
-        case '1.2'
+        case '1.2' % ----- Minimum Altitude ----- Robust
             mission.Nphases = 1;
             mission.tasksPerPhase = zeros(mission.Nphases, mission.Nobjectives);
             mission.exit_conditions = cell(mission.Nphases,1);
             mission.tasksPerPhase(1,:) = [0 0 1 1 1 0 0 0 0 0 1];
             mission.exit_conditions(1) = {@exit_phase_target};
-        case '2.1'
+        case '2.1' % ----- Landing ----- Robust
             mission.Nphases = 1;
             mission.tasksPerPhase = zeros(mission.Nphases, mission.Nobjectives);
             mission.exit_conditions = cell(mission.Nphases,1);
             mission.tasksPerPhase(1,:) = [0 0 0 1 0 0 1 0 0 0 1];
             mission.exit_conditions(1) = {@exit_phase_landing};
-        case '2.2'
+        case '2.2' % ----- Landing in 2 phases ----- Robust
             mission.Nphases = 2;
             mission.tasksPerPhase = zeros(mission.Nphases, mission.Nobjectives);
             mission.exit_conditions = cell(mission.Nphases,1);
@@ -46,7 +46,7 @@ function [mission] = InitMissionPhase2(exercise)
             % Second phase
             mission.tasksPerPhase(2,:) = [0 0 0 1 0 0 1 0 0 0 1];
             mission.exit_conditions(2) = {@exit_phase_landing};
-        case '3'
+        case '3' % ----- Longitudinal Alignment ----- Robust
             mission.Nphases = 2;
             mission.tasksPerPhase = zeros(mission.Nphases, mission.Nobjectives);
             mission.exit_conditions = cell(mission.Nphases,1);
@@ -56,7 +56,7 @@ function [mission] = InitMissionPhase2(exercise)
             % Second phase
             mission.tasksPerPhase(2,:) = [0 0 0 1 0 1 1 0 0 0 1];
             mission.exit_conditions(2) = {@exit_phase_landing_withAlignment};
-        case '3.1.4'
+        case '3.1.4' % ----- Move end effector ----- Robust
             mission.Nphases = 3;
             mission.tasksPerPhase = zeros(mission.Nphases, mission.Nobjectives);
             mission.exit_conditions = cell(mission.Nphases,1);
@@ -70,7 +70,7 @@ function [mission] = InitMissionPhase2(exercise)
             mission.tasksPerPhase(3,:) = [0 0 0 1 0 1 1 1 0 0 1];
             % mission.tasksPerPhase(3,:) = [0 0 0 0 0 0 0 1 0 0 1];
             mission.exit_conditions(3) = {@exit_endeffector_pos};
-        case '4.1'
+        case '4.1' % ----- Fix-base Manipulation ----- Robust
             mission.Nphases = 3;
             mission.tasksPerPhase = zeros(mission.Nphases, mission.Nobjectives);
             mission.exit_conditions = cell(mission.Nphases,1);
@@ -83,7 +83,7 @@ function [mission] = InitMissionPhase2(exercise)
             % Third phase
             mission.tasksPerPhase(3,:) = [0 0 0 0 0 0 0 1 1 0 1];
             mission.exit_conditions(3) = {@exit_endeffector_pos};
-        case '4.2'
+        case '4.2' % ----- Joint Limit ----- Robust
             mission.Nphases = 3;
             mission.tasksPerPhase = zeros(mission.Nphases, mission.Nobjectives);
             mission.exit_conditions = cell(mission.Nphases,1);
@@ -96,13 +96,13 @@ function [mission] = InitMissionPhase2(exercise)
             % Third phase
             mission.tasksPerPhase(3,:) = [1 1 0 0 0 0 0 1 1 0 1];
             mission.exit_conditions(3) = {@exit_endeffector_pos};
-        case '5.1'
+        case '5.1' % ----- Floating Manipulation - preferred shape ----- DexROV
             mission.Nphases = 1;
             mission.tasksPerPhase = zeros(mission.Nphases, mission.Nobjectives);
             mission.exit_conditions = cell(mission.Nphases,1);
             mission.tasksPerPhase(1,:) = [1 1 0 1 0 0 0 1 0 1 1];
             mission.exit_conditions(1) = {@exit_endeffector_pos};
-        case '5.2'
+        case '5.2' % ----- Floating Manipulation - 2 phases ----- DexROV
             mission.Nphases = 2;
             mission.tasksPerPhase = zeros(mission.Nphases, mission.Nobjectives);
             mission.exit_conditions = cell(mission.Nphases,1);
@@ -112,7 +112,7 @@ function [mission] = InitMissionPhase2(exercise)
             % Second phase
             mission.tasksPerPhase(2,:) = [1 1 0 1 0 0 0 1 1 1 1];
             mission.exit_conditions(2) = {@exit_endeffector_pos};
-        case '6'
+        case '6' % ----- Arm-Vehicle Coordination Scheme ----- DexROV
             mission.Nphases = 2;
             mission.tasksPerPhase = zeros(mission.Nphases, mission.Nobjectives);
             mission.exit_conditions = cell(mission.Nphases,1);
@@ -120,15 +120,16 @@ function [mission] = InitMissionPhase2(exercise)
             mission.tasksPerPhase(1,:) = [0 0 0 1 1 0 0 0 0 0 1];
             mission.exit_conditions(1) = {@exit_phase_target};
             % Second phase
-            mission.tasksPerPhase(2,:) = [1 1 0 1 0 0 0 1 0 1 1]; % check!
-            mission.exit_conditions(2) = {@exit_endeffector_pos}; % check!
+            mission.tasksPerPhase(2,:) = [1 1 0 1 0 0 0 1 0 1 1];
+            mission.exit_conditions(2) = {@exit_endeffector_pos};
         otherwise
             disp(['Exercise ',exercise,' doesn''t exist'])
             exercise = input('Enter the exercise: ','s');
             mission = InitMissionPhase2(exercise);
     end
 end
-% Callback for exiting the target reaching phase for the vehicle position
+
+%% Callback for exiting the target reaching phase for the vehicle position
 function [output] = exit_phase_target(uvms)
     [rho, basic_vector] = CartError(uvms.wTv, uvms.wTtarget); 
     cond1 = (norm(rho) <= 0.3); % orientation

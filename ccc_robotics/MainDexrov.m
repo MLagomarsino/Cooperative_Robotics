@@ -1,3 +1,7 @@
+%% Cooperative Robotics
+%  Group: Gava Luna, Lagomarsino Marta
+% ------------------------------------------------------------
+
 %function MainDexrov
 addpath('./simulation_scripts');
 clc;
@@ -48,6 +52,7 @@ uvms.p = [-1.9379 10.4813-6.1 -29.7242-0.1 0 0 0]';
 % slightly over the top of the pipe
 distanceGoalWrtPipe = 0.3;
 uvms.goalPosition = pipe_center + (pipe_radius + distanceGoalWrtPipe)*[0 0 1]';
+goalOrientation = [pi 0 0];
 uvms.wRg = rotation(pi,0,0);
 uvms.wTg = [uvms.wRg uvms.goalPosition; 0 0 0 1];
 
@@ -60,16 +65,37 @@ targetRotation = [0, -0.06, 0.5];
 uvms.wRtarget = rotation(0, -0.06, 0.5);
 uvms.wTtarget = [uvms.wRtarget uvms.targetPosition; 0 0 0 1]; % transf. matrix w->target
 
-exercise = input('Enter the exercise: ','s');
-% Definition and initialization of missions 
-mission = InitMissionPhase2(exercise);
+% exercise = input('Enter the exercise: ','s');
+% % Definition and initialization of missions 
+% mission = InitMissionPhase2(exercise);
 % mission = InitMissionPhase(exercise);
+option = input(['1 -> to perform an exercise,' newline '0 -> to enter specific objectives:  ']);
+if option
+    exercise = input('  Enter the exercise: ','s');
+    if strcmp(exercise,'5.1') || strcmp(exercise,'5.2')
+        coordSchema = 0;
+    else
+        coordSchema = 1;
+    end
+    % Definition and initialization of missions 
+    mission = InitMissionPhase2(exercise);
+else
+    nPhases = input('  Enter number of phases: ');
+    activeTasks = input('  Enter active tasks (vector 1x10): ');
+    exitCondition = input(['  Enter exit condition:' newline '1 -> vehicle reaching target position' ...
+                            newline '2 -> vehicle reaching target position' ...
+                            newline '3 -> vehicle landing on the seafloor' ...
+                            newline '4 -> vehicle landing on the seafloor aligning to the nodule:  ']);
+    mission = InitMissionPhase(1,activeTasks, exitCondition);
+    coordSchema = input('  Arm-Vehicle Coordination Scheme (0 -> no; 1 -> yes): ');
+end
 
 % Preallocation
 plt = InitDataPlot(maxloops, mission);
 plt.targetPosition = uvms.targetPosition; % vehicle target position
 plt.targetRotation = targetRotation;
 plt.goalPosition = uvms.goalPosition; % tool goal position
+plt.goalOrientation = goalOrientation;
 %plt.goalRotation = goalRotation;
 uvms = ComputeActivationFunctions(uvms, mission);
 
@@ -81,14 +107,15 @@ for t = 0:deltat:end_time
     uvms = ComputeTaskReferences(uvms);
     uvms = ComputeActivationFunctions(uvms, mission);
  
+    uvms.t = t;
     mission.current_time = t;
     
-    if strcmp(exercise,'5.1') || strcmp(exercise,'5.2')
+    if ~coordSchema
         % Exercise 5
         % the sequence of iCAT_task calls defines the priority
         [uvms] = taskSequence(uvms, mission);
     else
-        % Exercise 6
+        % Exercise 6 - Arm-Vehicle Coordination Scheme
         if mission.phase == 1
             % the sequence of iCAT_task calls defines the priority
             [uvms] = taskSequence(uvms, mission);
@@ -106,8 +133,8 @@ for t = 0:deltat:end_time
             % get the two variables for integration
             uvms.q_dot = q_dot2;
             % sinusoidal velocity disturbance wrt world frame
-            a_x = 1;    % amplitude of the sine along x
-            a_y = 1;    % amplitude of the sine along y
+            a_x = 0.5;    % amplitude of the sine along x
+            a_y = 0.5;    % amplitude of the sine along y
             w = pi;     % frequency of the sine
             disturbance = sin(w*t)*[a_x a_y 0 0 0 0]';
             % sinusoidal velocity disturbance wrt vehicle frame

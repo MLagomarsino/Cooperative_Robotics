@@ -1,14 +1,13 @@
 function [uvms] = ComputeActivationFunctions(uvms, mission)
-% compute the activation functions here
+% The function computes the activation functions
 
-% example: manipulability
+% manipulability
 % if mu < 0.02, A = 1;
 % if mu > 0.05, A = 0;
 % in between, there is a smooth behavior.
 uvms.A.mu = DecreasingBellShapedFunction(0.02, 0.05, 0, 1, uvms.mu);
 
-% phi: misalignment vector between the horizontal plane and the
-% longitudinal axis of the vehicle
+% horizontal attitude control
 % if norm(phi) > 0.1,   A = 1;
 % if norm(phi) < 0.025, A = 0;
 % in between, there is a smooth behavior.
@@ -37,20 +36,16 @@ uvms.A.la = eye(3)*IncreasingBellShapedFunction(0.025, 0.1, 0, 1, norm(uvms.misa
 % fix vehicle velocity
 uvms.A.fixvehicle = eye(6);
 
-% Joint limit
+% joint limit
 for i = 1:length(uvms.q)
     uvms.A.jl(i,i) = DecreasingBellShapedFunction(uvms.jlmin(i),uvms.jlmin(i) + 0.6,0,1,uvms.q(i)) + ...
                     IncreasingBellShapedFunction(uvms.jlmax(i) - 0.6,uvms.jlmax(i),0,1,uvms.q(i));
 end
 
-% Optimization 
+% arm preferred shape
 error_q =  uvms.preferred_shape - uvms.q(1:length(uvms.preferred_shape));
 for i = 1:length(uvms.preferred_shape)
     uvms.A.opt(i,i) = IncreasingBellShapedFunction(uvms.preferred_shape(i) - 0.1, uvms.preferred_shape(i),0,1,norm(error_q(i)));
 end
 
-% constrain vehicle velocity to a given value
-uvms.A.constrained_vel = eye(6);
-
 end
-

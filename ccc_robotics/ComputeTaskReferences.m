@@ -1,5 +1,5 @@
 function [uvms] = ComputeTaskReferences(uvms)
-% compute the task references here
+% The function computes the task references
 
 %% reference for manipulability
 uvms.xdot.mu = 0.1 * (0.12 - uvms.mu);

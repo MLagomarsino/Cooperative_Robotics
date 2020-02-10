@@ -8,7 +8,7 @@ function [uvms] = taskSequence(uvms, mission, current_v)
     if nargin == 3 % additional input for implementing Arm-Vehicle Coordination Scheme
         % TPIK 2
         % Constrained vehicle velocity to a given value current_v
-        [Qp, rhop] = iCAT_task(uvms.A.constrained_vel, uvms.Jconstrained_vel, Qp, rhop, current_v,  0.0001,   0.01, 10);
+        [Qp, rhop] = iCAT_task(uvms.A.fixvehicle, uvms.Jfixvehicle, Qp, rhop, current_v,  0.0001,   0.01, 10);
     end
     
     % joint limit task

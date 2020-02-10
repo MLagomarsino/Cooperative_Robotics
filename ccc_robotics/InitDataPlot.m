@@ -17,7 +17,7 @@ function [plt] = InitDataPlot( maxloops, mission)
     plt.xdot_mu = zeros(1, maxloops);
     plt.xdot_t = zeros(6, maxloops);
 
-    plt.a = zeros(17, maxloops); %%%%%%%%%%%% Numero giusto di A
+    plt.a = zeros(20, maxloops); %%%%%%%%%%%% Numero giusto di A
 
     plt.virtualFrameError = zeros(6, maxloops);
     plt.toolFrameError = zeros(6, maxloops);
